@@ -88,3 +88,6 @@ penta-file
 
 # Build directory
 /build/
+
+# VS code
+/.vscode/
