@@ -35,6 +35,7 @@ To clean:
 
 ```bash
 make clean
+```
 
 ## Developing Procedure
 
