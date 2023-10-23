@@ -1,15 +1,12 @@
 #include <QtWidgets>
-#include "../include/mainwidget.h"
+#include "widget/LineEntryWidget.hpp"
 
-int main(int argc, char *argv[])
-{
-  // Creates an instance of QApplication
-  QApplication app(argc, argv);
+int main(int argc, char *argv[]){
+    QApplication app(argc, argv);
+    LOG_INFO("Starting the application");
 
-  // This is our MainWidget class containing our GUI and functionality
-  MainWidget widget;
-  widget.show(); // Show main window
+    //Loading the main widget
 
-  // run the application and return execs() return value/code
-  return app.exec();
+    LOG_INFO("The application was loaded");
+    return app.exec();
 }

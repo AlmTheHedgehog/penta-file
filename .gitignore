@@ -87,7 +87,16 @@ compile_commands.json
 penta-file
 
 # Build directory
-/build/
+#/build/
+/build/obj
+/build/moc
+/build/rcc
+/build/bin
+.qmake.stash
+
+#exclude qt building file
+!/build/penta-file.pro
+!/build/penta-file.qrc
 
 # VS code
 /.vscode/

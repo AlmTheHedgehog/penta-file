@@ -7,7 +7,7 @@
 * `qmake`
 * `qtdeclarative5-dev`
 
-## Build Procedure
+## Setup Procedure
 
 To initialize (only necessary once):
 
@@ -17,22 +17,25 @@ qmake -project -o build/penta-file.pro
 sed -i '/^INCLUDEPATH.*/a \\nQT += widgets' build/penta-file.pro
 ```
 
-To build:
+## Build Procedure
+
+To build after init in one command:
 
 ```bash
-qmake -o build/Makefile build/penta-file.pro
-make --directory=build
+make full-build
 ```
 
 To run:
 
 ```bash
-./build/penta-file
+make run
 ```
 
 To clean:
 
 ```bash
-make --directory=build distclean
-```
+make clean
 
+## Developing Procedure
+
+Don't forget to add your source files to the SOURCES var in build/penta-file.pro
