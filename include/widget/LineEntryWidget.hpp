@@ -26,7 +26,6 @@ class LineEntryWidget : public QWidget {
         QLabel  *iconLabel, 
                 *nameLabel, 
                 *sizeLabel;
-        QHBoxLayout *layout;
         LineType lineType;
         QString name;
         qint64 size;

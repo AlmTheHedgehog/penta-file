@@ -1,27 +1,27 @@
 #include "widget/LineEntryWidget.hpp"
 
 LineEntryWidget::LineEntryWidget(LineType lineType, QString name, qint64 size, QWidget *parent):
-                    QWidget(parent), lineType(lineType), name(name), size(size){
-    layout = new QHBoxLayout(this);
+                QWidget(parent), lineType(lineType), name(name), size(size){
+    setLayout(new QHBoxLayout(this));
     iconLabel = new QLabel();
     setIcon(lineType);
     nameLabel = new QLabel(name);
     sizeLabel = new QLabel(QString::number(size));
 
     iconLabel->setFixedSize(16, 16);
-    nameLabel->setFixedSize(300, 16);
+    nameLabel->setFixedHeight(16);
     sizeLabel->setFixedSize(50, 16);
 
-    layout->addWidget(iconLabel);
-    layout->addWidget(nameLabel);
-    layout->addWidget(sizeLabel);
+    layout()->addWidget(iconLabel);
+    layout()->addWidget(nameLabel);
+    layout()->addWidget(sizeLabel);
+    layout()->setMargin(0);
 }
 
 LineEntryWidget::~LineEntryWidget(){
     delete iconLabel;
     delete nameLabel;
     delete sizeLabel;
-    delete layout;
 }
 
 void LineEntryWidget::setIcon(LineType lineType){
