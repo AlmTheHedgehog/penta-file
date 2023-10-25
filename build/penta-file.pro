@@ -27,5 +27,7 @@ QT += widgets
 HEADERS += ../include/* ../include/widget/*
 SOURCES += ../src/main.cpp \
            ../src/widget/LineEntryWidget.cpp \
-           ../src/widget/EntriesWindow.cpp
+           ../src/widget/EntriesWindow.cpp \
+           ../src/widget/TopBarWidget.cpp 
+
 RESOURCES += penta-file.qrc

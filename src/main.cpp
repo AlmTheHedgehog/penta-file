@@ -1,5 +1,9 @@
 #include <QtWidgets>
+
 #include "widget/EntriesWindow.hpp"
+#include "widget/LineEntryWidget.hpp"
+#include "widget/TopBarWidget.hpp"
+
 
 int main(int argc, char *argv[]){
     QApplication app(argc, argv);
@@ -26,6 +30,11 @@ int main(int argc, char *argv[]){
     window.addNewEntry(line8);
     window.show();
     */
+
+    TopBarWidget topBar;
+    topBar.show();
+    //Loading the main widget
+
 
     LOG_INFO("The application was loaded");
     return app.exec();
