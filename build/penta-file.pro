@@ -10,6 +10,7 @@ OBJECTS_DIR = obj
 RCC_DIR     = rcc
 DESTDIR     = bin
 
+
 QT += widgets
 
 # You can make your code fail to compile if you use deprecated APIs.
@@ -19,8 +20,14 @@ QT += widgets
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+#Debug arg
+#QMAKE_CXXFLAGS += -g
+
 # Input
 HEADERS += ../include/* ../include/widget/*
 SOURCES += ../src/main.cpp \
-           ../src/widget/*
+           ../src/widget/LineEntryWidget.cpp \
+           ../src/widget/EntriesWindow.cpp \
+           ../src/widget/TopBarWidget.cpp 
+
 RESOURCES += penta-file.qrc
