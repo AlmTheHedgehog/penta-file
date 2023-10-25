@@ -22,5 +22,5 @@ QT += widgets
 # Input
 HEADERS += ../include/* ../include/widget/*
 SOURCES += ../src/main.cpp \
-           ../src/widget/LineEntryWidget.cpp
+           ../src/widget/*
 RESOURCES += penta-file.qrc
