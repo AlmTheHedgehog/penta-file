@@ -5,6 +5,12 @@
 TEMPLATE = app
 TARGET = penta-file
 INCLUDEPATH += $$PWD/../include
+
+QT += widgets
+
+QT += widgets
+
+QT += widgets
 MOC_DIR     = moc
 OBJECTS_DIR = obj
 RCC_DIR     = rcc
@@ -28,6 +34,7 @@ HEADERS += ../include/* ../include/widget/*
 SOURCES += ../src/main.cpp \
            ../src/widget/LineEntryWidget.cpp \
            ../src/widget/EntriesWindow.cpp \
-           ../src/widget/TopBarWidget.cpp 
+           ../src/widget/TopBarWidget.cpp \ 
+           ../src/widget/MainFoldersWidget.cpp
 
 RESOURCES += penta-file.qrc

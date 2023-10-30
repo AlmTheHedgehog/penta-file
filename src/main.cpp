@@ -3,6 +3,7 @@
 #include "widget/EntriesWindow.hpp"
 #include "widget/LineEntryWidget.hpp"
 #include "widget/TopBarWidget.hpp"
+#include "widget/MainFolderWidget.hpp"
 
 
 int main(int argc, char *argv[]){
@@ -31,8 +32,12 @@ int main(int argc, char *argv[]){
     window.show();
     */
 
-    TopBarWidget topBar;
-    topBar.show();
+    // TopBarWidget topBar;
+    // topBar.show();
+
+    MainFolderWidget mainFolder;
+    mainFolder.show();
+    
     //Loading the main widget
 
 
