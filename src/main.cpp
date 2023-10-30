@@ -32,11 +32,16 @@ int main(int argc, char *argv[]){
     window.show();
     */
 
-    // TopBarWidget topBar;
-    // topBar.show();
-
+    QWidget window;
+    QVBoxLayout *layout = new QVBoxLayout;
+    TopBarWidget topBar;
     MainFolderWidget mainFolder;
-    mainFolder.show();
+    layout->addWidget(&topBar);
+    layout->addWidget(&mainFolder);
+    layout->addStretch();
+    
+    window.setLayout(layout);
+    window.show();
     
     //Loading the main widget
 
