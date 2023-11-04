@@ -1,15 +1,12 @@
 #pragma once
-#include <QWidget>
+#include <QPushButton>
 #include <QLabel>
 #include <QGridLayout>
-#include <QString>
-#include <QPixmap>
-#include <QtGlobal>
 
 #include "../rosourcesPaths.hpp"
 #include "../macrologger.h"
 
-class LineEntryWidget : public QWidget {
+class LineEntry : public QPushButton {
     Q_OBJECT
 
     public:
@@ -18,17 +15,22 @@ class LineEntryWidget : public QWidget {
             FILE
         };
 
-        LineEntryWidget(LineType lineType, QString name, qint64 size, QWidget *parent = nullptr);
-        virtual ~LineEntryWidget();
+        LineEntry(LineType lineType, QString name, QString path, qint64 size = 0, QWidget *parent = nullptr);
+        virtual ~LineEntry();
         void setIcon(LineType lineType);
 
     private:
+        void mouseDoubleClickEvent(QMouseEvent*) override;
         QLabel  *iconLabel, 
                 *nameLabel, 
                 *sizeLabel;
         LineType lineType;
-        QString name;
-        qint64 size;
+        QString  name;
+        qint64   size;
+        QString  path;
+
+    signals:
+        void setNewPath(QString newPath);
 
 };
 

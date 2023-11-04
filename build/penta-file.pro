@@ -27,9 +27,8 @@ DESTDIR     = bin
 # Input
 HEADERS += ../include/* ../include/widget/*
 SOURCES += ../src/main.cpp \
-           ../src/widget/LineEntryWidget.cpp \
+           ../src/widget/LineEntry.cpp \
            ../src/widget/EntriesWindow.cpp \
            ../src/widget/TopBarWidget.cpp \ 
-           ../src/widget/MainFoldersWidget.cpp \
-
+           ../src/widget/MainFoldersWidget.cpp 
 RESOURCES += penta-file.qrc

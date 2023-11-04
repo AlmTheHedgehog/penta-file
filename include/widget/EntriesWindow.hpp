@@ -1,23 +1,30 @@
 #pragma once
 #include <vector>
+#include <string>
 #include <QScrollArea>
-#include <QVBoxLayout>
+#include <QDir>
 
-#include "LineEntryWidget.hpp"
+#include "LineEntry.hpp"
 #include "../macrologger.h"
 
 class EntriesWindow : public QScrollArea {
     Q_OBJECT
 
     public:
-        EntriesWindow(QWidget *parent = nullptr);
+        EntriesWindow(QString path = "", QWidget *parent = nullptr);
         virtual ~EntriesWindow();
-        void addNewEntry(LineEntryWidget* newEntry);
-
 
     private:
+        void addNewEntry(LineEntry* newEntry);
+        void clearEntiesList();
         unsigned int entriesNumber;
-        std::vector<LineEntryWidget*> lineEntries;
+        std::vector<LineEntry*> lineEntries;
         QWidget *entriesContainer;
+        QDir directory;
+
+    public slots:
+        void setNewPath(QString newPath);
+    signals:
+        void wrongPath();
 
 };

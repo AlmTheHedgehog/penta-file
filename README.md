@@ -31,10 +31,10 @@ To run:
 make run
 ```
 
-To clean:
+To clear:
 
 ```bash
-make clean
+make clear
 ```
 
 ## Developing Procedure
