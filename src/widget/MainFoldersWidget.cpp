@@ -4,14 +4,10 @@ MainFolderWidget::MainFolderWidget(QWidget *parent) :
                 QWidget(parent){
     
     setLayout(new QHBoxLayout(this));
-
-
-    QHBoxLayout *newlayout = new QHBoxLayout(this);
-
-    // Get the list of directories in /mnt/ 
+    
     QDir mntDir("/mnt/");
     QStringList diskList = mntDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
-
+    
     for (const QString &diskName : diskList) {
         FolderButton folderButton;
         folderButton.name = diskName;
@@ -22,12 +18,28 @@ MainFolderWidget::MainFolderWidget(QWidget *parent) :
             handleFolderButtonClick(folderButton.path);
         });
 
-        newlayout->addWidget(folderButton.button);
+        layout()->addWidget(folderButton.button);
 
         buttonsList.append(folderButton);
     }
 
-    layout()->addItem(newlayout);
+    // QList<QStorageInfo> drives = QStorageInfo::mountedVolumes();
+
+    // for (const QStorageInfo &drive : drives) {
+    //     FolderButton folderButton;
+    //     folderButton.name = drive.displayName();
+    //     folderButton.path = drive.rootPath();
+    //     folderButton.button = new QPushButton(folderButton.name, this);
+
+    //     connect(folderButton.button, &QPushButton::clicked, this, [=]() {
+    //         handleFolderButtonClick(folderButton.path);
+    //     });
+
+    //     newlayout->addWidget(folderButton.button);
+
+    //     buttonsList.append(folderButton);
+    // }
+
 }
 
 void MainFolderWidget::handleFolderButtonClick(const QString &path) {

@@ -3,13 +3,10 @@
 TopBarWidget::TopBarWidget(QWidget *parent) :
                 QWidget(parent){
     
-    setLayout(new QHBoxLayout(this));
-
     menuBar = new QMenuBar(this);
     createActions();
     createMenus(menuBar);
-    //layout()->addWidget(menuBar);
-    
+
     pathField = new QLineEdit(this);
     searchButton = new QPushButton(this);
     createSearchField(pathField, searchButton);
@@ -24,7 +21,7 @@ TopBarWidget::TopBarWidget(QWidget *parent) :
     topBarLayout->addWidget(searchButton);
     topBarLayout->addStretch();  // Optional: Add stretch to push widgets to the left
 
-    layout()->addItem(topBarLayout);
+    setLayout(topBarLayout);
 }
 
 
@@ -52,11 +49,8 @@ void TopBarWidget::createSearchField(QLineEdit *pathField, QPushButton *searchBu
     QString currentPath = QDir::currentPath();
 
     pathField->setText(currentPath);
-    //layout()->addWidget(pathField);
-
     searchButton->setText("Search");
     connect(searchButton, &QPushButton::clicked, this, &TopBarWidget::searchPath);
-    //layout()->addWidget(searchButton);
 }
 
 void TopBarWidget::searchPath() {
@@ -150,7 +144,4 @@ void TopBarWidget::deleteItem(){
 
 TopBarWidget::~TopBarWidget()
 {
-    delete menuBar;
-    delete pathField;
-    delete searchButton;
 }

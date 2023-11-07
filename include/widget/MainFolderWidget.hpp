@@ -1,17 +1,11 @@
 #pragma once
 #include <QWidget>
-#include <QLabel>
 #include <QGridLayout>
 #include <QString>
-#include <QPixmap>
 #include <QtGlobal>
-#include <QMenu>
-#include <QMenuBar>
-#include <QMainWindow>
-#include <QAction>
-#include <QLineEdit>
 #include <QPushButton>
 #include <QDir>
+#include <QStorageInfo>
 
 #include "../rosourcesPaths.hpp"
 #include "../macrologger.h"
