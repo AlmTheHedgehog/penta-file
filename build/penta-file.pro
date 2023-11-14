@@ -30,5 +30,6 @@ SOURCES += ../src/main.cpp \
            ../src/widget/LineEntry.cpp \
            ../src/widget/EntriesWindow.cpp \
            ../src/widget/TopBarWidget.cpp \ 
-           ../src/widget/MainFoldersWidget.cpp 
+           ../src/widget/MainFoldersWidget.cpp\ 
+           ../src/widget/AppWidget.cpp
 RESOURCES += penta-file.qrc

@@ -25,9 +25,8 @@ MainFolderWidget::MainFolderWidget(QWidget *parent) :
 
 }
 
-void MainFolderWidget::handleFolderButtonClick(const QString &path) {
-    // Handle the button click, for example, emit a signal with the selected path
-   // emit folderButtonClicked(path);
+void MainFolderWidget::handleFolderButtonClick(const QString &path){
+    emit folderButtonClicked(path);
     LOG_DEBUG("Clicked on folder: %s", path.toStdString().c_str());
 }
 
