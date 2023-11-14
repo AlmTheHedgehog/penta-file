@@ -141,6 +141,9 @@ void TopBarWidget::deleteItem(){
     LOG_DEBUG("Delete item");
 }
 
+void TopBarWidget::setPath(const QString &newPath) {
+    pathField->setText(newPath);
+}
 
 TopBarWidget::~TopBarWidget()
 {

@@ -26,6 +26,10 @@ class TopBarWidget : public QWidget {
 
     protected:
 
+    public slots:
+        void setPath(const QString &newPath);
+        void searchPath();
+       
     private slots:
         void cut();
         void copy();
@@ -35,7 +39,7 @@ class TopBarWidget : public QWidget {
         void addNewFolder();
         void addNewFile();
         void deleteItem();
-        void searchPath();
+   
     
     private:
         void createActions();

@@ -5,15 +5,32 @@ MainFolderWidget::MainFolderWidget(QWidget *parent) :
     
     setLayout(new QHBoxLayout(this));
     
-    QDir mntDir;
-    QStringList diskList = mntDir.entryList(QDir::Drives);
+    // QDir mntDir;
+    // QStringList diskList = mntDir.entryList(QDir::Drives);
     
-    for (const QString &diskName : diskList) {
+    // for (const QString &diskName : diskList) {
+    //     FolderButton folderButton;
+    //     folderButton.name = diskName;
+    //     folderButton.path = mntDir.absoluteFilePath(diskName);
+    //     folderButton.button = new QPushButton(diskName, this);
+    //     LOG_DEBUG("Disk name: %s", diskName.toStdString().c_str());
+    //     connect(folderButton.button, &QPushButton::clicked, this, [=]() {
+    //         handleFolderButtonClick(folderButton.path);
+    //     });
+
+    //     layout()->addWidget(folderButton.button);
+
+    //     buttonsList.append(folderButton);
+    // }
+
+    QList<QStorageInfo> drives = QStorageInfo::mountedVolumes();
+
+    for (const QStorageInfo &drive : drives) {
         FolderButton folderButton;
-        folderButton.name = diskName;
-        folderButton.path = mntDir.absoluteFilePath(diskName);
-        folderButton.button = new QPushButton(diskName, this);
-        LOG_DEBUG("Disk name: %s", diskName.toStdString().c_str());
+        folderButton.name = drive.displayName();
+        folderButton.path = drive.rootPath();
+        folderButton.button = new QPushButton(folderButton.name, this);
+
         connect(folderButton.button, &QPushButton::clicked, this, [=]() {
             handleFolderButtonClick(folderButton.path);
         });
@@ -22,23 +39,6 @@ MainFolderWidget::MainFolderWidget(QWidget *parent) :
 
         buttonsList.append(folderButton);
     }
-
-    // QList<QStorageInfo> drives = QStorageInfo::mountedVolumes();
-
-    // for (const QStorageInfo &drive : drives) {
-    //     FolderButton folderButton;
-    //     folderButton.name = drive.displayName();
-    //     folderButton.path = drive.rootPath();
-    //     folderButton.button = new QPushButton(folderButton.name, this);
-
-    //     connect(folderButton.button, &QPushButton::clicked, this, [=]() {
-    //         handleFolderButtonClick(folderButton.path);
-    //     });
-
-    //     newlayout->addWidget(folderButton.button);
-
-    //     buttonsList.append(folderButton);
-    // }
 
 }
 
