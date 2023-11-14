@@ -5,23 +5,6 @@ MainFolderWidget::MainFolderWidget(QWidget *parent) :
     
     setLayout(new QHBoxLayout(this));
     
-    // QDir mntDir;
-    // QStringList diskList = mntDir.entryList(QDir::Drives);
-    
-    // for (const QString &diskName : diskList) {
-    //     FolderButton folderButton;
-    //     folderButton.name = diskName;
-    //     folderButton.path = mntDir.absoluteFilePath(diskName);
-    //     folderButton.button = new QPushButton(diskName, this);
-    //     LOG_DEBUG("Disk name: %s", diskName.toStdString().c_str());
-    //     connect(folderButton.button, &QPushButton::clicked, this, [=]() {
-    //         handleFolderButtonClick(folderButton.path);
-    //     });
-
-    //     layout()->addWidget(folderButton.button);
-
-    //     buttonsList.append(folderButton);
-    // }
 
     QList<QStorageInfo> drives = QStorageInfo::mountedVolumes();
 

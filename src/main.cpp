@@ -4,7 +4,7 @@
 #include "widget/LineEntryWidget.hpp"
 #include "widget/TopBarWidget.hpp"
 #include "widget/MainFolderWidget.hpp"
-#include "widget/FileManager.hpp"
+
 
 
 int main(int argc, char *argv[]){
@@ -33,21 +33,18 @@ int main(int argc, char *argv[]){
     window.show();
     */
 
-    // QWidget window;
-    // QVBoxLayout *layout = new QVBoxLayout;
-    // TopBarWidget topBar;
-    // MainFolderWidget mainFolder;
-    // layout->addWidget(&topBar);
-    // layout->addWidget(&mainFolder);
-    // layout->addStretch();
+    QWidget window;
+    QVBoxLayout *layout = new QVBoxLayout;
+    TopBarWidget topBar;
+    MainFolderWidget mainFolder;
+    layout->addWidget(&topBar);
+    layout->addWidget(&mainFolder);
+    layout->addStretch();
     
-    // window.setLayout(layout);
-    // window.show();
+    window.setLayout(layout);
+    window.show();
     
     //Loading the main widget
-
-    FileManager window;
-    window.show();
 
     LOG_INFO("The application was loaded");
     return app.exec();
