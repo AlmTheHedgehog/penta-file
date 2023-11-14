@@ -9,6 +9,10 @@
 #include <QMenuBar>
 #include <QMainWindow>
 #include <QAction>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QDir>
+
 
 #include "../rosourcesPaths.hpp"
 #include "../macrologger.h"
@@ -22,6 +26,10 @@ class TopBarWidget : public QWidget {
 
     protected:
 
+    public slots:
+        void setPath(const QString &newPath);
+        void searchPath();
+       
     private slots:
         void cut();
         void copy();
@@ -31,17 +39,18 @@ class TopBarWidget : public QWidget {
         void addNewFolder();
         void addNewFile();
         void deleteItem();
+   
     
     private:
         void createActions();
         void createMenus(QMenuBar *menuBar);
+        void createSearchField(QLineEdit *pathField, QPushButton *searchButton);
 
         QMenuBar *menuBar;
         QMenu *fileMenu;
         QMenu *editMenu;
         QMenu *helpMenu;
         
-        QHBoxLayout *layout;
 
         QAction *cutAct;
         QAction *copyAct;
@@ -54,5 +63,9 @@ class TopBarWidget : public QWidget {
 
         QLabel *undoIconLabel;
         QLabel*redoIconLabel;
+
+        
+        QLineEdit *pathField;
+        QPushButton *searchButton;
 };
 

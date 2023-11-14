@@ -3,6 +3,8 @@
 #include "widget/EntriesWindow.hpp"
 #include "widget/LineEntryWidget.hpp"
 #include "widget/TopBarWidget.hpp"
+#include "widget/MainFolderWidget.hpp"
+
 
 
 int main(int argc, char *argv[]){
@@ -31,10 +33,18 @@ int main(int argc, char *argv[]){
     window.show();
     */
 
+    QWidget window;
+    QVBoxLayout *layout = new QVBoxLayout;
     TopBarWidget topBar;
-    topBar.show();
+    MainFolderWidget mainFolder;
+    layout->addWidget(&topBar);
+    layout->addWidget(&mainFolder);
+    layout->addStretch();
+    
+    window.setLayout(layout);
+    window.show();
+    
     //Loading the main widget
-
 
     LOG_INFO("The application was loaded");
     return app.exec();

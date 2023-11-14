@@ -5,13 +5,14 @@
 TEMPLATE = app
 TARGET = penta-file
 INCLUDEPATH += $$PWD/../include
+
+QT += widgets
+
 MOC_DIR     = moc
 OBJECTS_DIR = obj
 RCC_DIR     = rcc
 DESTDIR     = bin
 
-
-QT += widgets
 
 # You can make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -28,6 +29,7 @@ HEADERS += ../include/* ../include/widget/*
 SOURCES += ../src/main.cpp \
            ../src/widget/LineEntryWidget.cpp \
            ../src/widget/EntriesWindow.cpp \
-           ../src/widget/TopBarWidget.cpp 
+           ../src/widget/TopBarWidget.cpp \ 
+           ../src/widget/MainFoldersWidget.cpp \
 
 RESOURCES += penta-file.qrc

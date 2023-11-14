@@ -4,12 +4,26 @@ TopBarWidget::TopBarWidget(QWidget *parent) :
                 QWidget(parent){
     
     menuBar = new QMenuBar(this);
-
-    
-
     createActions();
     createMenus(menuBar);
+
+    pathField = new QLineEdit(this);
+    searchButton = new QPushButton(this);
+    createSearchField(pathField, searchButton);
+    
+    QHBoxLayout *topBarLayout = new QHBoxLayout;
+
+    menuBar->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+    topBarLayout->addWidget(menuBar);
+    pathField->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    topBarLayout->addWidget(pathField);
+    searchButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+    topBarLayout->addWidget(searchButton);
+    topBarLayout->addStretch();  // Optional: Add stretch to push widgets to the left
+
+    setLayout(topBarLayout);
 }
+
 
 void TopBarWidget::createMenus(QMenuBar *menuBar){
     fileMenu = menuBar->addMenu(tr("&File"));
@@ -28,6 +42,25 @@ void TopBarWidget::createMenus(QMenuBar *menuBar){
     menuBar->addSeparator();
     menuBar->addAction(undoAct);
     menuBar->addAction(redoAct);
+}
+
+
+void TopBarWidget::createSearchField(QLineEdit *pathField, QPushButton *searchButton){
+    QString currentPath = QDir::currentPath();
+
+    pathField->setText(currentPath);
+    searchButton->setText("Search");
+    connect(searchButton, &QPushButton::clicked, this, &TopBarWidget::searchPath);
+}
+
+void TopBarWidget::searchPath() {
+    QString path = pathField->text();
+    
+    // Perform actions with the entered path, e.g., navigate to the directory, etc.
+    // Add your logic here based on what you want to do with the entered path.
+    
+    // For now, let's just print the path
+    LOG_DEBUG("Path");
 }
 
 void TopBarWidget::createActions(){
@@ -108,8 +141,10 @@ void TopBarWidget::deleteItem(){
     LOG_DEBUG("Delete item");
 }
 
+void TopBarWidget::setPath(const QString &newPath) {
+    pathField->setText(newPath);
+}
 
 TopBarWidget::~TopBarWidget()
 {
-    delete menuBar;
 }
