@@ -33,13 +33,17 @@ void EntriesWindow::clearEntiesList(){
     LOG_INFO("Enties list was cleared");
 }
 
-void EntriesWindow::setNewPath(QString newPath){
+void EntriesWindow::setNewPath(const QString &newPath){
     QFileInfo newDir(newPath);
-    if ((!newDir.exists()) || (!newDir.isDir()) || (!newDir.isWritable())) {
+    if ((!newDir.exists()) || (!newDir.isDir())) {
         //TODO: make possible to work with read-only dirs
+        if(!newDir.isWritable()){
+            LOG_INFO("A new directory(%s) is opened in read-only, isWritable:%d",
+                    newPath.toLatin1().data(), false);
+        }
         LOG_ABNORMAL("Failed to set a new directory(%s). Emit wrongPath signal."
-                    " Exists:%d, isDir:%d, isWritable:%d",
-                    newPath.toLatin1().data(), newDir.exists(), newDir.isDir(), newDir.isWritable());
+                    " Exists:%d, isDir:%d",
+                    newPath.toLatin1().data(), newDir.exists(), newDir.isDir());
         emit wrongPath();
         return;
     }
@@ -60,4 +64,5 @@ void EntriesWindow::setNewPath(QString newPath){
         }
     }
     LOG_INFO("New path(%s) was set and entries were fetched", newPath.toLatin1().data());
+    emit setNewPathSignal(newPath);
 }

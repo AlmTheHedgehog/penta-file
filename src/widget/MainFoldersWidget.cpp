@@ -23,6 +23,8 @@ MainFolderWidget::MainFolderWidget(QWidget *parent) :
         buttonsList.append(folderButton);
     }
 
+    layout()->setContentsMargins(0, 0, 0, 0);
+
 }
 
 void MainFolderWidget::handleFolderButtonClick(const QString &path){

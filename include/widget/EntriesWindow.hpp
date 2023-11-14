@@ -23,8 +23,9 @@ class EntriesWindow : public QScrollArea {
         QDir directory;
 
     public slots:
-        void setNewPath(QString newPath);
+        void setNewPath(const QString &newPath);
     signals:
         void wrongPath();
+        void setNewPathSignal(const QString &newPath);
 
 };

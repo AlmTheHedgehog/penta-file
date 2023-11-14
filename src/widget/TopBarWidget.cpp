@@ -21,6 +21,7 @@ TopBarWidget::TopBarWidget(QWidget *parent) :
     topBarLayout->addWidget(searchButton);
     topBarLayout->addStretch();  // Optional: Add stretch to push widgets to the left
 
+    topBarLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(topBarLayout);
 }
 
@@ -49,7 +50,7 @@ void TopBarWidget::createSearchField(QLineEdit *pathField, QPushButton *searchBu
     QString currentPath = QDir::currentPath();
 
     pathField->setText(currentPath);
-    searchButton->setText("Search");
+    searchButton->setText("Go");
     connect(searchButton, &QPushButton::clicked, this, &TopBarWidget::searchPath);
 }
 
@@ -123,6 +124,14 @@ void TopBarWidget::paste(){
 
 void TopBarWidget::undo(){
     LOG_DEBUG("Undo");
+    // pathField->setText(newPath);
+    QDir dir(pathField->text());
+    if(dir.cdUp()){
+        pathField->setText(dir.absolutePath());
+        emit newPathSignal(dir.absolutePath());
+    }else{
+        LOG_ABNORMAL("Parent directory doesnt exist, Can`t cdUp()");
+    }
 }
 
 void TopBarWidget::redo(){
@@ -142,9 +151,9 @@ void TopBarWidget::deleteItem(){
 }
 
 void TopBarWidget::setPath(const QString &newPath) {
+    LOG_DEBUG("path:%s", newPath.toLatin1().data());
     pathField->setText(newPath);
 }
 
-TopBarWidget::~TopBarWidget()
-{
+TopBarWidget::~TopBarWidget(){
 }

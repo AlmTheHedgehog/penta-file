@@ -12,6 +12,10 @@ AppWidget::AppWidget(QString path, QWidget *parent) :
 
     connect(&mountedFoldersWidget, &MainFolderWidget::folderButtonClicked, 
             this, &AppWidget::changePathToMountedFolder);
+    connect(&entriesWindow, &EntriesWindow::setNewPathSignal, 
+            &topBar, &TopBarWidget::setPath);
+    connect(&topBar, &TopBarWidget::newPathSignal, 
+            &entriesWindow, &EntriesWindow::setNewPath);
             
     
 }
