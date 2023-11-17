@@ -17,7 +17,7 @@ build/$(PROJECT).pro: src/* include/*
 	mkdir -p build
 	qmake -project -o build/$(PROJECT).pro
 
-clean:
+clear:
 	rm -rf build/moc
 	rm -rf build/obj
 	rm -rf build/rcc

@@ -39,6 +39,9 @@ class TopBarWidget : public QWidget {
         void addNewFolder();
         void addNewFile();
         void deleteItem();
+
+    signals:
+        void newPathSignal(const QString &newPath);
    
     
     private:
