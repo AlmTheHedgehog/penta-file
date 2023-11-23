@@ -7,6 +7,9 @@ TARGET = penta-file
 INCLUDEPATH += $$PWD/../include
 
 QT += widgets
+LIBS += -lcrypto
+
+QT += widgets
 
 MOC_DIR     = moc
 OBJECTS_DIR = obj

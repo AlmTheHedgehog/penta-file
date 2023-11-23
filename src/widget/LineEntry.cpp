@@ -45,3 +45,38 @@ void LineEntry::setIcon(LineType lineType){
 void LineEntry::mouseDoubleClickEvent(QMouseEvent*){
     emit setNewPath(path);
 }
+
+void LineEntry::calculateChecksum(){
+    LOG_INFO("Start sha256 checksum calculation for %s", path.toLatin1().data());
+    if(lineType != FILE){
+        LOG_ABNORMAL("Impossible to calculate checksum. Not a file!");
+        return;
+    }
+
+    std::ifstream fileStream(path.toLatin1().data(), std::ios::in | std::ios::binary);
+    if (!fileStream.good()) {
+        LOG_ERROR("Can`t oppen file for hash calculation!");
+        return;
+    }
+
+    char readingBuffer[FILE_READ_CHUNK] = {0};
+    unsigned char hash[SHA256_DIGEST_LENGTH] = {0};
+    SHA256_CTX ctx;
+    SHA256_Init(&ctx);
+
+    while(fileStream.good()){
+        fileStream.read(readingBuffer, FILE_READ_CHUNK);
+        SHA256_Update(&ctx, readingBuffer, fileStream.gcount());
+    }
+
+    SHA256_Final(hash, &ctx);
+    fileStream.close();
+
+    std::ostringstream hashStringStream;
+    hashStringStream << std::hex << std::setfill('0');
+    for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
+        hashStringStream << std::setw(2) << static_cast<int>(hash[i]);
+    }
+    checksum = QString::fromStdString(hashStringStream.str());
+    LOG_INFO("Calculated checksum:%s", checksum.toLatin1().data());
+}
