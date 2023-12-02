@@ -3,6 +3,7 @@
 #include <string>
 #include <QScrollArea>
 #include <QDir>
+#include <QDirIterator>
 
 #include "LineEntry.hpp"
 #include "../macrologger.h"
@@ -17,15 +18,26 @@ class EntriesWindow : public QScrollArea {
     private:
         void addNewEntry(LineEntry* newEntry);
         void clearEntiesList();
-        unsigned int entriesNumber;
+        void copyAndReplaceFolderContents(const QString &fromDir, const QString &toDir, bool copyAndRemove = false);        unsigned int entriesNumber;
         std::vector<LineEntry*> lineEntries;
         QWidget *entriesContainer;
         QDir directory;
+        LineEntry *selectedLine;
+        QFileInfo *copiedLine;
+        bool *isCut = new bool(false);
 
     public slots:
         void setNewPath(const QString &newPath);
+        void selectLine(const QString &filePath);
+        void copySelectedLine();
+        void pasteSelectedLine(const QString &destinationPath);
+        void cutSelectedLine();
+        void deleteSelectedLine();
+
     signals:
         void wrongPath();
         void setNewPathSignal(const QString &newPath);
+        void setFileToPathSignal(const QString &filePath);
+        void copiedLineSignal(const QString &filePath);
 
 };

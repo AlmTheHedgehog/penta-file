@@ -29,16 +29,16 @@ TopBarWidget::TopBarWidget(QWidget *parent) :
 void TopBarWidget::createMenus(QMenuBar *menuBar){
     fileMenu = menuBar->addMenu(tr("&File"));
     fileMenu->addAction(addNewFolderAct);
-    fileMenu->addAction(addNewFileAct);
-    fileMenu->addAction(deleteAct);
-
+    // fileMenu->addAction(addNewFileAct);
+   
     editMenu = menuBar->addMenu(tr("&Edit"));
     editMenu->addAction(cutAct);
     editMenu->addAction(copyAct);
     editMenu->addAction(pasteAct);
+    editMenu->addAction(deleteAct);
     editMenu->addSeparator();
     
-    helpMenu = menuBar->addMenu(tr("&Help"));
+    // helpMenu = menuBar->addMenu(tr("&Help"));
 
     menuBar->addSeparator();
     menuBar->addAction(undoAct);
@@ -107,19 +107,22 @@ void TopBarWidget::createActions(){
 
     deleteAct = new QAction(tr("&Delete"), this);
     deleteAct->setStatusTip(tr("Delete item"));
+    deleteAct->setShortcut(QKeySequence::Delete);
     connect(deleteAct, &QAction::triggered, this, &TopBarWidget::deleteItem);
 }
 
 void TopBarWidget::cut(){
-    LOG_DEBUG("Cut");
+    emit cutSignal();
 }
 
 void TopBarWidget::copy(){
-    LOG_DEBUG("Copy");
+    emit copySignal();
 }
 
 void TopBarWidget::paste(){
-    LOG_DEBUG("Paste");
+    QDir dir(pathField->text());
+    emit pasteSignal(dir.absolutePath());
+  
 }
 
 void TopBarWidget::undo(){
@@ -148,6 +151,7 @@ void TopBarWidget::addNewFile(){
 
 void TopBarWidget::deleteItem(){
     LOG_DEBUG("Delete item");
+    emit deleteSignal();
 }
 
 void TopBarWidget::setPath(const QString &newPath) {

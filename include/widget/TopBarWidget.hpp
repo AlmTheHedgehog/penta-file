@@ -42,7 +42,10 @@ class TopBarWidget : public QWidget {
 
     signals:
         void newPathSignal(const QString &newPath);
-   
+        void copySignal();
+        void pasteSignal(const QString &destinationPath);
+        void cutSignal();
+        void deleteSignal();
     
     private:
         void createActions();
@@ -70,5 +73,7 @@ class TopBarWidget : public QWidget {
         
         QLineEdit *pathField;
         QPushButton *searchButton;
+
+        bool *isCut = new bool(false);
 };
 

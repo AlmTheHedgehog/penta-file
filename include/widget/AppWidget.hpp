@@ -3,6 +3,8 @@
 #include "EntriesWindow.hpp"
 #include "MainFolderWidget.hpp"
 #include "TopBarWidget.hpp"
+#include "LineEntry.hpp"
+
 
 class AppWidget : public QWidget {
     Q_OBJECT
@@ -19,4 +21,6 @@ class AppWidget : public QWidget {
         TopBarWidget topBar;
         MainFolderWidget mountedFoldersWidget;
         EntriesWindow entriesWindow;
+
+        void connectSignals();
 };
