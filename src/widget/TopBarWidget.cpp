@@ -29,6 +29,7 @@ TopBarWidget::TopBarWidget(QWidget *parent) :
 void TopBarWidget::createMenus(QMenuBar *menuBar){
     fileMenu = menuBar->addMenu(tr("&File"));
     fileMenu->addAction(addNewFolderAct);
+    // fileMenu->addAction(renameAct);
     // fileMenu->addAction(addNewFileAct);
    
     editMenu = menuBar->addMenu(tr("&Edit"));
@@ -42,7 +43,7 @@ void TopBarWidget::createMenus(QMenuBar *menuBar){
 
     menuBar->addSeparator();
     menuBar->addAction(undoAct);
-    menuBar->addAction(redoAct);
+    // menuBar->addAction(redoAct);
 }
 
 
@@ -109,6 +110,10 @@ void TopBarWidget::createActions(){
     deleteAct->setStatusTip(tr("Delete item"));
     deleteAct->setShortcut(QKeySequence::Delete);
     connect(deleteAct, &QAction::triggered, this, &TopBarWidget::deleteItem);
+
+    renameAct = new QAction(tr("&Rename"), this);
+    renameAct->setStatusTip(tr("Rename item"));
+    connect(renameAct, &QAction::triggered, this, &TopBarWidget::renameItem);
 }
 
 void TopBarWidget::cut(){
@@ -142,7 +147,9 @@ void TopBarWidget::redo(){
 }
 
 void TopBarWidget::addNewFolder(){
-    LOG_DEBUG("Add new folder");
+    QString folderName = QInputDialog::getText(this, tr("Add new folder"),
+                                         tr("Folder name:"));
+    emit addNewFolderSignal(folderName);
 }
 
 void TopBarWidget::addNewFile(){
@@ -157,6 +164,12 @@ void TopBarWidget::deleteItem(){
 void TopBarWidget::setPath(const QString &newPath) {
     LOG_DEBUG("path:%s", newPath.toLatin1().data());
     pathField->setText(newPath);
+}
+
+void TopBarWidget::renameItem(){
+    QString newName = QInputDialog::getText(this, tr("Rename item"),
+                                         tr("New name:"));
+    emit renameSignal(newName);
 }
 
 TopBarWidget::~TopBarWidget(){

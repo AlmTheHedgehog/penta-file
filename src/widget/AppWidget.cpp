@@ -38,6 +38,10 @@ void AppWidget::connectSignals(){
                 &entriesWindow, &EntriesWindow::cutSelectedLine);
     connect(&topBar, &TopBarWidget::deleteSignal,
                 &entriesWindow, &EntriesWindow::deleteSelectedLine);
+    connect(&topBar, &TopBarWidget::addNewFolderSignal,
+                &entriesWindow, &EntriesWindow::addNewFolder);
+    connect(&topBar, &TopBarWidget::renameSignal,
+                &entriesWindow, &EntriesWindow::renameSelectedLine);
 }
 
 

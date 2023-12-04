@@ -3,6 +3,7 @@
 #include <string>
 #include <QScrollArea>
 #include <QDir>
+#include <QProcess>
 #include <QDirIterator>
 
 #include "LineEntry.hpp"
@@ -33,6 +34,8 @@ class EntriesWindow : public QScrollArea {
         void pasteSelectedLine(const QString &destinationPath);
         void cutSelectedLine();
         void deleteSelectedLine();
+        void addNewFolder(const QString &destinationPath);
+        void renameSelectedLine(const QString &newName);
 
     signals:
         void wrongPath();

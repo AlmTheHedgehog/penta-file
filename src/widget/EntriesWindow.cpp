@@ -42,10 +42,13 @@ void EntriesWindow::setNewPath(const QString &newPath){
             LOG_INFO("A new directory(%s) is opened in read-only, isWritable:%d",
                     newPath.toLatin1().data(), false);
         }
-        LOG_ABNORMAL("Failed to set a new directory(%s). Emit wrongPath signal."
-                    " Exists:%d, isDir:%d",
-                    newPath.toLatin1().data(), newDir.exists(), newDir.isDir());
-        emit wrongPath();
+
+        QProcess::startDetached("xdg-open", QStringList() << newDir.filePath());
+
+        // LOG_ABNORMAL("Failed to set a new directory(%s). Emit wrongPath signal."
+        //             " Exists:%d, isDir:%d",
+        //             newPath.toLatin1().data(), newDir.exists(), newDir.isDir());
+        // emit wrongPath();
         return;
     }
     directory.setPath(newPath);
@@ -205,6 +208,50 @@ void EntriesWindow::deleteSelectedLine(){
         if(!file.remove()){
             LOG_ABNORMAL("Failed to remove a file(%s)",
                         selectedLine->getFilePath().toLatin1().data());
+            return;
+        }
+    }
+    setNewPath(directory.absolutePath());
+}
+
+void EntriesWindow::addNewFolder(const QString &folderName){
+    if(folderName == ""){
+        LOG_ABNORMAL("Folder name is empty");
+        return;
+    }
+
+    QDir dir(directory.absolutePath());
+    if(!dir.mkdir(folderName)){
+        LOG_ABNORMAL("Failed to create a new folder(%s) in a directory(%s)",
+                    folderName.toLatin1().data(), directory.absolutePath().toLatin1().data());
+        return;
+    }
+    setNewPath(directory.absolutePath());
+}
+
+void EntriesWindow::renameSelectedLine(const QString &newName){
+    if(!selectedLine){
+        LOG_ABNORMAL("No line was selected");
+        return;
+    }
+
+    if(newName == ""){
+        LOG_ABNORMAL("New name is empty");
+        return;
+    }
+
+    if(selectedLine->getLineType() == LineEntry::LineType::DIRECTORY){
+        QDir dir(selectedLine->getFilePath());
+        if(!dir.rename(selectedLine->getLineName(), newName)){
+            LOG_ABNORMAL("Failed to rename a directory(%s) to a new name(%s)",
+                        selectedLine->getLineName().toLatin1().data(), newName.toLatin1().data());
+            return;
+        }
+    }else{
+        QFile file(selectedLine->getFilePath());
+        if(!file.rename(selectedLine->getLineName(), newName)){
+            LOG_ABNORMAL("Failed to rename a file(%s) to a new name(%s)",
+                        selectedLine->getLineName().toLatin1().data(), newName.toLatin1().data());
             return;
         }
     }
