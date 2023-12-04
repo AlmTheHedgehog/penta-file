@@ -9,15 +9,16 @@ AppWidget::AppWidget(QString path, QWidget *parent) :
     layout()->addWidget(&entriesWindow);
 
     topBar.setPath(path);
-
+      
     connect(&mountedFoldersWidget, &MainFolderWidget::folderButtonClicked, 
             this, &AppWidget::changePathToMountedFolder);
     connect(&entriesWindow, &EntriesWindow::setNewPathSignal, 
             &topBar, &TopBarWidget::setPath);
     connect(&topBar, &TopBarWidget::newPathSignal, 
-            &entriesWindow, &EntriesWindow::setNewPath);
-            
-    
+            &entriesWindow, &EntriesWindow::setNewPath);   
+    connectSignals();
+ 
+
 }
 
 AppWidget::~AppWidget(){
@@ -27,3 +28,20 @@ void AppWidget::changePathToMountedFolder(QString path){
     topBar.setPath(path);
     entriesWindow.setNewPath(path);
 }
+
+void AppWidget::connectSignals(){
+    connect(&topBar, &TopBarWidget::copySignal,
+                &entriesWindow, &EntriesWindow::copySelectedLine);
+    connect(&topBar, &TopBarWidget::pasteSignal,
+                &entriesWindow, &EntriesWindow::pasteSelectedLine);
+    connect(&topBar, &TopBarWidget::cutSignal,
+                &entriesWindow, &EntriesWindow::cutSelectedLine);
+    connect(&topBar, &TopBarWidget::deleteSignal,
+                &entriesWindow, &EntriesWindow::deleteSelectedLine);
+    connect(&topBar, &TopBarWidget::addNewFolderSignal,
+                &entriesWindow, &EntriesWindow::addNewFolder);
+    connect(&topBar, &TopBarWidget::renameSignal,
+                &entriesWindow, &EntriesWindow::renameSelectedLine);
+}
+
+
