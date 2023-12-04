@@ -80,3 +80,30 @@ void LineEntry::calculateChecksum(){
     checksum = QString::fromStdString(hashStringStream.str());
     LOG_INFO("Calculated checksum:%s", checksum.toLatin1().data());
 }
+
+void LineEntry::mousePressEvent(QMouseEvent* event){
+    if(event->button() == Qt::MouseButton::LeftButton){
+        emit setFilePath(path);
+    }
+}
+
+void LineEntry::setSelection(bool selected) {
+    if (!selected) {
+        setStyleSheet("");
+        return;
+    }
+
+    setStyleSheet("background-color: grey; color: white;");
+}
+
+QString LineEntry::getFilePath(){
+    return path;
+}
+
+LineEntry::LineType LineEntry::getLineType(){
+    return lineType;
+}
+
+QString LineEntry::getLineName(){
+    return name;
+}

@@ -12,6 +12,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QDir>
+#include <QInputDialog>
 
 
 #include "../rosourcesPaths.hpp"
@@ -39,10 +40,16 @@ class TopBarWidget : public QWidget {
         void addNewFolder();
         void addNewFile();
         void deleteItem();
+        void renameItem();
 
     signals:
         void newPathSignal(const QString &newPath);
-   
+        void copySignal();
+        void pasteSignal(const QString &destinationPath);
+        void cutSignal();
+        void deleteSignal();
+        void addNewFolderSignal(const QString &destinationPath);
+        void renameSignal(const QString &newName);
     
     private:
         void createActions();
@@ -63,6 +70,7 @@ class TopBarWidget : public QWidget {
         QAction *addNewFolderAct;
         QAction *addNewFileAct;
         QAction *deleteAct;
+        QAction *renameAct;
 
         QLabel *undoIconLabel;
         QLabel*redoIconLabel;
@@ -70,5 +78,7 @@ class TopBarWidget : public QWidget {
         
         QLineEdit *pathField;
         QPushButton *searchButton;
+
+        bool *isCut = new bool(false);
 };
 
