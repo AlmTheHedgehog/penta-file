@@ -63,6 +63,7 @@ void TopBarWidget::searchPath() {
     
     // For now, let's just print the path
     LOG_DEBUG("Path");
+    //TODO: add got tothe path(emit signal?)
 }
 
 void TopBarWidget::createActions(){

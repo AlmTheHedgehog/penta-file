@@ -68,6 +68,7 @@ void EntriesWindow::setNewPath(const QString &newPath){
         }
     }
     LOG_INFO("New path(%s) was set and entries were fetched", newPath.toLatin1().data());
+    selectedLine = nullptr;
     emit setNewPathSignal(newPath);
 }
 
@@ -91,27 +92,29 @@ void EntriesWindow::selectLine(const QString &filePath){
 }
 
 void EntriesWindow::copySelectedLine(){
-    if(!selectedLine){
+    if(selectedLine == nullptr){
         LOG_ABNORMAL("No line was selected");
         return;
     }
     *isCut = false;
     copiedLine = new QFileInfo(selectedLine->getFilePath());
     LOG_INFO("Line(%s) was copied", selectedLine->getFilePath().toLatin1().data());
+    selectedLine = nullptr;
 }
 
 void EntriesWindow::cutSelectedLine(){
-    if(!selectedLine){
+    if(selectedLine == nullptr){
         LOG_ABNORMAL("No line was selected");
         return;
     }
     copiedLine = new QFileInfo(selectedLine->getFilePath());
     *isCut = true;
     LOG_INFO("Line(%s) was cut", selectedLine->getFilePath().toLatin1().data());
+    selectedLine = nullptr;
 }
 
 void EntriesWindow::pasteSelectedLine(const QString &destinationPath){
-    if(!copiedLine) {
+    if(copiedLine == nullptr) {
         LOG_ABNORMAL("No line was copied");
         return;
     }
@@ -191,7 +194,7 @@ void EntriesWindow::copyAndReplaceFolderContents(const QString &fromDir, const Q
 }
 
 void EntriesWindow::deleteSelectedLine(){
-    if(!selectedLine){
+    if(selectedLine == nullptr){
         LOG_ABNORMAL("No line was selected");
         return;
     }
@@ -230,7 +233,7 @@ void EntriesWindow::addNewFolder(const QString &folderName){
 }
 
 void EntriesWindow::renameSelectedLine(const QString &newName){
-    if(!selectedLine){
+    if(selectedLine == nullptr){
         LOG_ABNORMAL("No line was selected");
         return;
     }

@@ -23,8 +23,8 @@ class EntriesWindow : public QScrollArea {
         std::vector<LineEntry*> lineEntries;
         QWidget *entriesContainer;
         QDir directory;
-        LineEntry *selectedLine;
-        QFileInfo *copiedLine;
+        LineEntry *selectedLine = nullptr;
+        QFileInfo *copiedLine = nullptr;
         bool *isCut = new bool(false);
 
     public slots:

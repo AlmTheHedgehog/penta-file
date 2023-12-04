@@ -36,11 +36,6 @@ class LineEntry : public QPushButton {
      
 
     private:
-<<<<<<< HEAD
-=======
-        void mouseDoubleClickEvent(QMouseEvent*) override;
-        void mousePressEvent(QMouseEvent* event) override;
->>>>>>> master
         QLabel  *iconLabel, 
                 *nameLabel, 
                 *sizeLabel;
@@ -50,6 +45,7 @@ class LineEntry : public QPushButton {
         QString  path;
         QString  checksum;
         void mouseDoubleClickEvent(QMouseEvent*) override;
+        void mousePressEvent(QMouseEvent* event) override;
 
     public slots:
         void calculateChecksum();

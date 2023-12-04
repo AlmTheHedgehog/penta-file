@@ -22,6 +22,7 @@ LineEntry::LineEntry(LineType lineType, QString name, QString path, qint64 size,
     layout()->addWidget(sizeLabel);
     layout()->setContentsMargins(8, 0, 0, 0);
     setStyleSheet("padding: 0px");
+    setCheckable(true);
     setFlat(true);
 }
 
@@ -34,8 +35,7 @@ void LineEntry::setIcon(LineType lineType){
             iconLabel->setPixmap(QPixmap(DIRECTORY_ICON_URL));
             break;
         case LineType::FILE:
-            //TODO: add icon for files
-            LOG_DEBUG("TODO: add file icon");
+            iconLabel->setPixmap(QPixmap(FILE_ICON_URL));
             break;
         default:
             LOG_ABNORMAL("Unknown type of LineEntry");
@@ -89,11 +89,10 @@ void LineEntry::mousePressEvent(QMouseEvent* event){
 
 void LineEntry::setSelection(bool selected) {
     if (!selected) {
-        setStyleSheet("");
+        setChecked(false);
         return;
     }
-
-    setStyleSheet("background-color: grey; color: white;");
+    setChecked(true);
 }
 
 QString LineEntry::getFilePath(){
