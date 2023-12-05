@@ -95,7 +95,6 @@ void EntriesWindow::selectLine(const QString &filePath){
                 emit turnOnChecksumVerificationForSelectedLineSignal(true);
             }
             LOG_INFO("Line(%s) was selected", filePath.toLatin1().data());
-            return;
         }
     }
 }
