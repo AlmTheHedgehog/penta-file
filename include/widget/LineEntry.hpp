@@ -30,6 +30,7 @@ class LineEntry : public QPushButton {
         QString getFilePath();
         LineType getLineType();
         QString getLineName();
+        QString getChecksum();
 
     public slots:
         void setSelection(bool selected);

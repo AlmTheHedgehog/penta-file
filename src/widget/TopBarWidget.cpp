@@ -29,6 +29,7 @@ TopBarWidget::TopBarWidget(QWidget *parent) :
 void TopBarWidget::createMenus(QMenuBar *menuBar){
     fileMenu = menuBar->addMenu(tr("&File"));
     fileMenu->addAction(addNewFolderAct);
+    fileMenu->addAction(checksumVerificationAct);
     // fileMenu->addAction(renameAct);
     // fileMenu->addAction(addNewFileAct);
    
@@ -63,7 +64,7 @@ void TopBarWidget::searchPath() {
     
     // For now, let's just print the path
     LOG_DEBUG("Path");
-    //TODO: add got tothe path(emit signal?)
+    //TODO: add go to the path(emit signal?)
 }
 
 void TopBarWidget::createActions(){
@@ -102,6 +103,11 @@ void TopBarWidget::createActions(){
     addNewFolderAct = new QAction(tr("&Add new folder"), this);
     addNewFolderAct->setStatusTip(tr("Add new folder"));
     connect(addNewFolderAct, &QAction::triggered, this, &TopBarWidget::addNewFolder);
+
+    checksumVerificationAct = new QAction(tr("&Verify file checksum"), this);
+    checksumVerificationAct->setStatusTip(tr("Verify file checksum"));
+    checksumVerificationAct->setDisabled(true);
+    connect(checksumVerificationAct, &QAction::triggered, this, &TopBarWidget::checksumVerification);
     
     addNewFileAct = new QAction(tr("&Add new file"), this);
     addNewFileAct->setStatusTip(tr("Add new file"));
@@ -171,6 +177,22 @@ void TopBarWidget::renameItem(){
     QString newName = QInputDialog::getText(this, tr("Rename item"),
                                          tr("New name:"));
     emit renameSignal(newName);
+}
+
+void TopBarWidget::checksumVerification(){
+    emit checksumVerificationSignal();
+}
+
+void TopBarWidget::turnOnVerifyChecksumButton(bool status){
+    if(status){
+        if(!checksumVerificationAct->isEnabled()){
+            checksumVerificationAct->setEnabled(true);
+        }
+    }else{
+        if(checksumVerificationAct->isEnabled()){
+            checksumVerificationAct->setEnabled(false);
+        }
+    }
 }
 
 TopBarWidget::~TopBarWidget(){

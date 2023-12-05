@@ -90,9 +90,9 @@ void LineEntry::mousePressEvent(QMouseEvent* event){
 void LineEntry::setSelection(bool selected) {
     if (!selected) {
         setChecked(false);
-        return;
+    }else{
+        setChecked(true);
     }
-    setChecked(true);
 }
 
 QString LineEntry::getFilePath(){
@@ -106,3 +106,7 @@ LineEntry::LineType LineEntry::getLineType(){
 QString LineEntry::getLineName(){
     return name;
 }
+
+QString LineEntry::getChecksum(){
+    return checksum;
+};
