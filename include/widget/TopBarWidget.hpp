@@ -30,6 +30,7 @@ class TopBarWidget : public QWidget {
     public slots:
         void setPath(const QString &newPath);
         void searchPath();
+        void turnOnVerifyChecksumButton(bool status);
        
     private slots:
         void cut();
@@ -41,6 +42,7 @@ class TopBarWidget : public QWidget {
         void addNewFile();
         void deleteItem();
         void renameItem();
+        void checksumVerification();
 
     signals:
         void newPathSignal(const QString &newPath);
@@ -50,6 +52,7 @@ class TopBarWidget : public QWidget {
         void deleteSignal();
         void addNewFolderSignal(const QString &destinationPath);
         void renameSignal(const QString &newName);
+        void checksumVerificationSignal();
     
     private:
         void createActions();
@@ -71,6 +74,7 @@ class TopBarWidget : public QWidget {
         QAction *addNewFileAct;
         QAction *deleteAct;
         QAction *renameAct;
+        QAction *checksumVerificationAct;
 
         QLabel *undoIconLabel;
         QLabel*redoIconLabel;

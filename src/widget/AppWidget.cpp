@@ -42,6 +42,12 @@ void AppWidget::connectSignals(){
                 &entriesWindow, &EntriesWindow::addNewFolder);
     connect(&topBar, &TopBarWidget::renameSignal,
                 &entriesWindow, &EntriesWindow::renameSelectedLine);
+    connect(&topBar, &TopBarWidget::checksumVerificationSignal,
+                &entriesWindow, &EntriesWindow::createNewChecksumVerificationWindow);
+
+    connect(&entriesWindow, &EntriesWindow::turnOnChecksumVerificationForSelectedLineSignal,
+                &topBar, &TopBarWidget::turnOnVerifyChecksumButton);
+
 }
 
 

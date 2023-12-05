@@ -52,6 +52,10 @@ void EntriesWindow::setNewPath(const QString &newPath){
         return;
     }
     directory.setPath(newPath);
+    if(selectedLine != nullptr){
+        selectedLine->setSelection(false);
+        selectedLine = nullptr;
+    }
     clearEntiesList();
     for(auto entry:directory.entryInfoList(QDir::Filter::NoDotAndDotDot
                                             | QDir::Filter::Dirs
@@ -85,33 +89,45 @@ void EntriesWindow::selectLine(const QString &filePath){
         if(eachline->getFilePath() == filePath){
             eachline->setSelection(true);
             selectedLine = eachline;
+            if(selectedLine->getLineType() == LineEntry::LineType::DIRECTORY){
+                emit turnOnChecksumVerificationForSelectedLineSignal(false);
+            }else{
+                emit turnOnChecksumVerificationForSelectedLineSignal(true);
+            }
             LOG_INFO("Line(%s) was selected", filePath.toLatin1().data());
+            return;
         }
     }
 }
 
 void EntriesWindow::copySelectedLine(){
-    if(!selectedLine){
+    if(selectedLine == nullptr){
         LOG_ABNORMAL("No line was selected");
         return;
     }
     *isCut = false;
     copiedLine = new QFileInfo(selectedLine->getFilePath());
     LOG_INFO("Line(%s) was copied", selectedLine->getFilePath().toLatin1().data());
+    selectedLine->setSelection(false);
+    selectedLine = nullptr;
 }
 
 void EntriesWindow::cutSelectedLine(){
-    if(!selectedLine){
+    //TODO: check if not read-only
+    if(selectedLine == nullptr){
         LOG_ABNORMAL("No line was selected");
         return;
     }
     copiedLine = new QFileInfo(selectedLine->getFilePath());
     *isCut = true;
     LOG_INFO("Line(%s) was cut", selectedLine->getFilePath().toLatin1().data());
+    selectedLine->setSelection(false);
+    selectedLine = nullptr;
 }
 
 void EntriesWindow::pasteSelectedLine(const QString &destinationPath){
-    if(!copiedLine) {
+    //TODO: check if not read-only
+    if(copiedLine == nullptr) {
         LOG_ABNORMAL("No line was copied");
         return;
     }
@@ -165,6 +181,7 @@ void EntriesWindow::pasteSelectedLine(const QString &destinationPath){
 
 
 void EntriesWindow::copyAndReplaceFolderContents(const QString &fromDir, const QString &toDir, bool copyAndRemove) {
+    //TODO: check if not read-only
     QDirIterator it(fromDir, QDirIterator::Subdirectories);
     QDir dir(fromDir);
     const int absSourcePathLength = dir.absoluteFilePath(fromDir).length();
@@ -191,7 +208,8 @@ void EntriesWindow::copyAndReplaceFolderContents(const QString &fromDir, const Q
 }
 
 void EntriesWindow::deleteSelectedLine(){
-    if(!selectedLine){
+    //TODO: check if not read-only
+    if(selectedLine == nullptr){
         LOG_ABNORMAL("No line was selected");
         return;
     }
@@ -230,7 +248,7 @@ void EntriesWindow::addNewFolder(const QString &folderName){
 }
 
 void EntriesWindow::renameSelectedLine(const QString &newName){
-    if(!selectedLine){
+    if(selectedLine == nullptr){
         LOG_ABNORMAL("No line was selected");
         return;
     }
@@ -256,4 +274,42 @@ void EntriesWindow::renameSelectedLine(const QString &newName){
         }
     }
     setNewPath(directory.absolutePath());
+}
+
+void EntriesWindow::deleteChecksumVerifyWindow(ChecksumDialogWindow *windowPtr){
+    bool found = false;
+    std::vector<ChecksumDialogWindow*>::iterator iter = checksumVerifyWindows.begin();
+    for(; iter < checksumVerifyWindows.end(); iter++){
+        if(*iter == windowPtr){
+            found = true;
+            break;
+        }
+    }
+    if(found){
+        checksumVerifyWindows.erase(iter);
+    }else{
+        LOG_ABNORMAL("Didn`t find checksum window to delete from vector");
+    }
+}
+
+void EntriesWindow::createNewChecksumVerificationWindow(){
+    if(selectedLine == nullptr){
+        LOG_ABNORMAL("Line is not selected");
+        return;
+    }
+    if(selectedLine->getLineType() == LineEntry::LineType::DIRECTORY){
+        LOG_ABNORMAL("Impossible to calculate checksum for directory");
+        return;
+    }
+    selectedLine->calculateChecksum();
+    ChecksumDialogWindow* newVerificationWindow = new ChecksumDialogWindow(selectedLine->getLineName(),
+                                                                        selectedLine->getChecksum());
+    checksumVerifyWindows.push_back(newVerificationWindow);
+    connect(newVerificationWindow, &ChecksumDialogWindow::destroyedSignal,
+            this, &EntriesWindow::deleteChecksumVerifyWindow);
+    newVerificationWindow->show();
+    LOG_INFO("Checksum Dialog Window for %s was created", selectedLine->getLineName().toLatin1().data());
+    selectedLine->setSelection(false);
+    emit turnOnChecksumVerificationForSelectedLineSignal(false);
+    selectedLine = nullptr;
 }

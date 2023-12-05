@@ -2,10 +2,18 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QGridLayout>
+#include <openssl/sha.h>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
 #include <QMouseEvent>
 
 #include "../rosourcesPaths.hpp"
 #include "../macrologger.h"
+
+
+#define FILE_READ_CHUNK (0x1000)
 
 class LineEntry : public QPushButton {
     Q_OBJECT
@@ -22,14 +30,13 @@ class LineEntry : public QPushButton {
         QString getFilePath();
         LineType getLineType();
         QString getLineName();
+        QString getChecksum();
 
     public slots:
         void setSelection(bool selected);
      
 
     private:
-        void mouseDoubleClickEvent(QMouseEvent*) override;
-        void mousePressEvent(QMouseEvent* event) override;
         QLabel  *iconLabel, 
                 *nameLabel, 
                 *sizeLabel;
@@ -37,6 +44,13 @@ class LineEntry : public QPushButton {
         QString  name;
         qint64   size;
         QString  path;
+        QString  checksum;
+        void mouseDoubleClickEvent(QMouseEvent*) override;
+        void mousePressEvent(QMouseEvent* event) override;
+
+    public slots:
+        void calculateChecksum();
+
 
     signals:
         void setNewPath(QString newPath);

@@ -1,7 +1,10 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource prefix="/icons">
     <file alias="directory.png">../resources/icons/directory.png</file>
+    <file alias="file.png">../resources/icons/file.png</file>
     <file alias="undo.png">../resources/icons/undo.png</file>
     <file alias="redo.png">../resources/icons/redo.png</file>
+    <file alias="notVerified.png">../resources/icons/notVerified.png</file>
+    <file alias="verified.png">../resources/icons/verified.png</file>
 </qresource>
 </RCC>
