@@ -94,6 +94,7 @@ void EntriesWindow::selectLine(const QString &filePath){
             }else{
                 emit turnOnChecksumVerificationForSelectedLineSignal(true);
             }
+            emit turnOnPropertiesForSelectedLineSignal(true);
             LOG_INFO("Line(%s) was selected", filePath.toLatin1().data());
         }
     }
@@ -108,6 +109,7 @@ void EntriesWindow::copySelectedLine(){
     copiedLine = new QFileInfo(selectedLine->getFilePath());
     LOG_INFO("Line(%s) was copied", selectedLine->getFilePath().toLatin1().data());
     selectedLine->setSelection(false);
+    emit turnOnPropertiesForSelectedLineSignal(false);
     selectedLine = nullptr;
 }
 
@@ -121,6 +123,7 @@ void EntriesWindow::cutSelectedLine(){
     *isCut = true;
     LOG_INFO("Line(%s) was cut", selectedLine->getFilePath().toLatin1().data());
     selectedLine->setSelection(false);
+    emit turnOnPropertiesForSelectedLineSignal(false);
     selectedLine = nullptr;
 }
 
@@ -175,6 +178,7 @@ void EntriesWindow::pasteSelectedLine(const QString &destinationPath){
     }
     setNewPath(destinationPath);
     LOG_INFO("Line(%s) was pasted", copiedLine->fileName().toLatin1().data());
+    emit turnOnPropertiesForSelectedLineSignal(false);
     copiedLine = nullptr;   
 }
 
@@ -229,6 +233,8 @@ void EntriesWindow::deleteSelectedLine(){
         }
     }
     setNewPath(directory.absolutePath());
+    emit turnOnPropertiesForSelectedLineSignal(false);
+    selectedLine = nullptr;
 }
 
 void EntriesWindow::addNewFolder(const QString &folderName){
@@ -273,6 +279,8 @@ void EntriesWindow::renameSelectedLine(const QString &newName){
         }
     }
     setNewPath(directory.absolutePath());
+    emit turnOnPropertiesForSelectedLineSignal(false);
+    selectedLine = nullptr;
 }
 
 void EntriesWindow::deleteChecksumVerifyWindow(ChecksumDialogWindow *windowPtr){
@@ -310,5 +318,18 @@ void EntriesWindow::createNewChecksumVerificationWindow(){
     LOG_INFO("Checksum Dialog Window for %s was created", selectedLine->getLineName().toLatin1().data());
     selectedLine->setSelection(false);
     emit turnOnChecksumVerificationForSelectedLineSignal(false);
+    selectedLine = nullptr;
+}
+
+void EntriesWindow::createPropertiesWindow(){
+    if(selectedLine == nullptr){
+        LOG_ABNORMAL("Line is not selected");
+        return;
+    }
+    PropertiesWindow* newVerificationWindow = new PropertiesWindow(selectedLine->getFilePath());
+    newVerificationWindow->show();
+    LOG_INFO("Properties Dialog Window for %s was created", selectedLine->getLineName().toLatin1().data());
+    selectedLine->setSelection(false);
+    emit turnOnPropertiesForSelectedLineSignal(false);
     selectedLine = nullptr;
 }

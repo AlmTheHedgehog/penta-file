@@ -7,6 +7,7 @@
 #include <QDirIterator>
 
 #include "ChecksumDialogWindow.hpp"
+#include "PropertiesWindow.hpp"
 #include "LineEntry.hpp"
 #include "../macrologger.h"
 
@@ -24,6 +25,7 @@ class EntriesWindow : public QScrollArea {
         void copyAndReplaceFolderContents(const QString &fromDir, const QString &toDir, bool copyAndRemove = false);        unsigned int entriesNumber;
         std::vector<LineEntry*> lineEntries;
         std::vector<ChecksumDialogWindow*> checksumVerifyWindows;
+        
         QWidget *entriesContainer;
         QDir directory;
         LineEntry *selectedLine = nullptr;
@@ -40,6 +42,7 @@ class EntriesWindow : public QScrollArea {
         void addNewFolder(const QString &destinationPath);
         void renameSelectedLine(const QString &newName);
         void createNewChecksumVerificationWindow();
+        void createPropertiesWindow();
 
     signals:
         void wrongPath();
@@ -47,5 +50,6 @@ class EntriesWindow : public QScrollArea {
         void setFileToPathSignal(const QString &filePath);
         void copiedLineSignal(const QString &filePath);
         void turnOnChecksumVerificationForSelectedLineSignal(bool status);
+        void turnOnPropertiesForSelectedLineSignal(bool status);
 
 };

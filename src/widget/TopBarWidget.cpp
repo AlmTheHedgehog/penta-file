@@ -30,6 +30,7 @@ void TopBarWidget::createMenus(QMenuBar *menuBar){
     fileMenu = menuBar->addMenu(tr("&File"));
     fileMenu->addAction(addNewFolderAct);
     fileMenu->addAction(checksumVerificationAct);
+    fileMenu->addAction(propertiesAct);
     // fileMenu->addAction(renameAct);
     // fileMenu->addAction(addNewFileAct);
    
@@ -108,6 +109,11 @@ void TopBarWidget::createActions(){
     checksumVerificationAct->setStatusTip(tr("Verify file checksum"));
     checksumVerificationAct->setDisabled(true);
     connect(checksumVerificationAct, &QAction::triggered, this, &TopBarWidget::checksumVerification);
+
+    propertiesAct = new QAction(tr("&Properties"), this);
+    propertiesAct->setStatusTip(tr("Properties"));
+    propertiesAct->setDisabled(true);
+    connect(propertiesAct, &QAction::triggered, this, &TopBarWidget::properties);
     
     addNewFileAct = new QAction(tr("&Add new file"), this);
     addNewFileAct->setStatusTip(tr("Add new file"));
@@ -183,6 +189,10 @@ void TopBarWidget::checksumVerification(){
     emit checksumVerificationSignal();
 }
 
+void TopBarWidget::properties(){
+    emit propertiesSignal();
+}
+
 void TopBarWidget::turnOnVerifyChecksumButton(bool status){
     if(status){
         if(!checksumVerificationAct->isEnabled()){
@@ -191,6 +201,18 @@ void TopBarWidget::turnOnVerifyChecksumButton(bool status){
     }else{
         if(checksumVerificationAct->isEnabled()){
             checksumVerificationAct->setEnabled(false);
+        }
+    }
+}
+
+void TopBarWidget::turnOnPropertiesButton(bool status){
+    if(status){
+        if(!propertiesAct->isEnabled()){
+            propertiesAct->setEnabled(true);
+        }
+    }else{
+        if(propertiesAct->isEnabled()){
+            propertiesAct->setEnabled(false);
         }
     }
 }
