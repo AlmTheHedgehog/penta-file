@@ -6,10 +6,11 @@
 #include <QHBoxLayout>
 #include <QFontMetrics>
 
+#include "PopupWindowB.hpp"
 #include "../rosourcesPaths.hpp"
 #include "../macrologger.h"
 
-class ChecksumDialogWindow : public QWidget {
+class ChecksumDialogWindow : public PopupWindowB {
     Q_OBJECT
 
     public:
@@ -27,7 +28,4 @@ class ChecksumDialogWindow : public QWidget {
         QLabel compareToLable;
         QLineEdit lineInput;
         QPushButton verifyButton;
-
-    signals:
-        void destroyedSignal(ChecksumDialogWindow* thisWindow);
 };

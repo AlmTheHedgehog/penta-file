@@ -36,19 +36,26 @@ void EntriesWindow::clearEntiesList(){
 
 void EntriesWindow::setNewPath(const QString &newPath){
     QFileInfo newDir(newPath);
-    if ((!newDir.exists()) || (!newDir.isDir())) {
+    if(!newDir.exists()){
+        LOG_ABNORMAL("A new directory(%s) doesn`t exist.",
+                        newPath.toLatin1().data());
+        NotificationWindow *errorWindow = new NotificationWindow("path " + newPath + " doesn`t exists", 
+                                                                NotificationWindow::NotificationType::ERROR);
+        initPopupWindow(errorWindow);
+        return;
+    }
+    if(!newDir.isWritable()){
         //TODO: make possible to work with read-only dirs
-        if(!newDir.isWritable()){
-            LOG_INFO("A new directory(%s) is opened in read-only, isWritable:%d",
-                    newPath.toLatin1().data(), false);
-        }
-
-        QProcess::startDetached("xdg-open", QStringList() << newDir.filePath());
-
+        LOG_INFO("A new directory(%s) is opened in read-only", newPath.toLatin1().data());
         // LOG_ABNORMAL("Failed to set a new directory(%s). Emit wrongPath signal."
         //             " Exists:%d, isDir:%d",
         //             newPath.toLatin1().data(), newDir.exists(), newDir.isDir());
         // emit wrongPath();
+    }
+    if(!newDir.isDir()){
+        QProcess::startDetached("xdg-open", QStringList() << newDir.filePath());
+        LOG_INFO("A new directory(%s) is a file which will be opened using xdg-open",
+                    newPath.toLatin1().data());
         return;
     }
     directory.setPath(newPath);
@@ -275,19 +282,19 @@ void EntriesWindow::renameSelectedLine(const QString &newName){
     setNewPath(directory.absolutePath());
 }
 
-void EntriesWindow::deleteChecksumVerifyWindow(ChecksumDialogWindow *windowPtr){
+void EntriesWindow::deletePopupWindow(PopupWindowB *windowPtr){
     bool found = false;
-    std::vector<ChecksumDialogWindow*>::iterator iter = checksumVerifyWindows.begin();
-    for(; iter < checksumVerifyWindows.end(); iter++){
+    std::vector<PopupWindowB*>::iterator iter = dialogWindows.begin();
+    for(; iter < dialogWindows.end(); iter++){
         if(*iter == windowPtr){
             found = true;
             break;
         }
     }
     if(found){
-        checksumVerifyWindows.erase(iter);
+        dialogWindows.erase(iter);
     }else{
-        LOG_ABNORMAL("Didn`t find checksum window to delete from vector");
+        LOG_ABNORMAL("Didn`t find dialog window to delete from vector");
     }
 }
 
@@ -303,12 +310,15 @@ void EntriesWindow::createNewChecksumVerificationWindow(){
     selectedLine->calculateChecksum();
     ChecksumDialogWindow* newVerificationWindow = new ChecksumDialogWindow(selectedLine->getLineName(),
                                                                         selectedLine->getChecksum());
-    checksumVerifyWindows.push_back(newVerificationWindow);
-    connect(newVerificationWindow, &ChecksumDialogWindow::destroyedSignal,
-            this, &EntriesWindow::deleteChecksumVerifyWindow);
-    newVerificationWindow->show();
-    LOG_INFO("Checksum Dialog Window for %s was created", selectedLine->getLineName().toLatin1().data());
+    initPopupWindow(newVerificationWindow);
     selectedLine->setSelection(false);
     emit turnOnChecksumVerificationForSelectedLineSignal(false);
     selectedLine = nullptr;
+}
+
+void EntriesWindow::initPopupWindow(PopupWindowB* window){
+    dialogWindows.push_back(window);
+    connect(window, &PopupWindowB::windowDestroyed,
+            this, &EntriesWindow::deletePopupWindow);
+    window->show();
 }
