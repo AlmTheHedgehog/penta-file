@@ -4,24 +4,11 @@ PropertiesWindow::PropertiesWindow(QString objectPath, QWidget *parent):
                                     QWidget(parent), objectPath(objectPath){
     object = new QFileInfo(objectPath);                                    
    
-    setWindowTitle("Properties " + nameLable.text());
+    setWindowTitle("Properties " + nameLabel.text());
     setLayout(new QVBoxLayout());
 
-    if(object->isDir()){
-        directoryProperties();
-    }
-    else if(object->isFile()){
-        fileProperties();
-    }
-    else{
-        LOG_DEBUG("Object is not a file or directory");
-    }
+    createProperties();
 
-    QPushButton *returnButton = new QPushButton("Return", this);
-    returnButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    layout()->addWidget(returnButton);
-    connect(returnButton, &QPushButton::clicked, this, &PropertiesWindow::close);
-    
     layout()->setSpacing(8);
     layout()->setSizeConstraint(QLayout::SetFixedSize);
     adjustSize();
@@ -30,142 +17,162 @@ PropertiesWindow::PropertiesWindow(QString objectPath, QWidget *parent):
 PropertiesWindow::~PropertiesWindow(){
 }
 
-void PropertiesWindow::fileProperties(){
-    nameLable.setText("File name -> " + object->fileName());
+void PropertiesWindow::createProperties(){
+    QWidget* nameWidget = new QWidget(this);
+    QHBoxLayout *nameLayout = new QHBoxLayout(nameWidget);
+    nameEdit = new QLineEdit(nameWidget);
 
-    qint64 fileSizeInBytes = object->size();
-    double fileSizeInMB = static_cast<double>(fileSizeInBytes) / (1024 * 1024);
-    double fileSizeInGB = fileSizeInMB / 1024;
-
-    QString sizeText;
-
-    if (fileSizeInGB >= 0.01) {
-        sizeText = "File size -> " + QString::number(fileSizeInGB, 'f', 2) + " GB";
-    } else if (fileSizeInMB >= 0.01) {
-        sizeText = "File size -> " + QString::number(fileSizeInMB, 'f', 2) + " MB";
-    } else {
-        sizeText = "File size -> " + QString::number(fileSizeInBytes) + " bytes";
+    nameLabel.setTextFormat(Qt::RichText);
+    nameLabel.setText("<b>Name:</b> ");
+    nameLayout->addWidget(&nameLabel);
+    nameEdit->setText(object->baseName());
+    nameLayout->addWidget(nameEdit);
+    if(!object->isDir()){
+        nameLayout->addWidget(new QLabel("." + object->suffix(), nameWidget));
     }
-
-    sizeLable.setText(sizeText);
-
-    typeLable.setText("File type -> " + object->suffix());
-    pathLable.setText("File path -> " + object->absoluteFilePath());
-    birthDateLable.setText("File birth date -> " + object->birthTime().toString("yyyy-MM-dd HH:mm:ss"));
-    lastModifiedLable.setText("File last modified -> " + object->lastModified().toString("yyyy-MM-dd HH:mm:ss"));
-    
-    ownerLable.setText("File owner -> " + object->owner());
-    QFileDevice::Permissions filePermissions = object->permissions();
-    QString permissionsText = "File permissions -> ";
-
-    if (filePermissions & QFileDevice::ReadOwner)
-        permissionsText += "ReadOwner ";
-    if (filePermissions & QFileDevice::WriteOwner)
-        permissionsText += "WriteOwner ";
-    if (filePermissions & QFileDevice::ExeOwner)
-        permissionsText += "ExeOwner ";
-
-    if (filePermissions & QFileDevice::ReadUser)
-        permissionsText += "ReadUser ";
-    if (filePermissions & QFileDevice::WriteUser)
-        permissionsText += "WriteUser ";
-    if (filePermissions & QFileDevice::ExeUser)
-        permissionsText += "ExeUser ";
-
-    if (filePermissions & QFileDevice::ReadGroup)
-        permissionsText += "ReadGroup ";
-    if (filePermissions & QFileDevice::WriteGroup)
-        permissionsText += "WriteGroup ";
-    if (filePermissions & QFileDevice::ExeGroup)
-        permissionsText += "ExeGroup ";
-
-    if (filePermissions & QFileDevice::ReadOther)
-        permissionsText += "ReadOther ";
-    if (filePermissions & QFileDevice::WriteOther)
-        permissionsText += "WriteOther ";
-    if (filePermissions & QFileDevice::ExeOther)
-        permissionsText += "ExeOther ";
-
-    permissionsLable.setText(permissionsText);
-    
-    layout()->addWidget(&nameLable);
-    layout()->addWidget(&typeLable);
-    layout()->addWidget(&pathLable);
-    layout()->addItem(new QSpacerItem(0, 10, QSizePolicy::Minimum, QSizePolicy::Expanding));
-    layout()->addWidget(&sizeLable);
-    layout()->addWidget(&birthDateLable);
-    layout()->addWidget(&lastModifiedLable);
-    layout()->addItem(new QSpacerItem(0, 10, QSizePolicy::Minimum, QSizePolicy::Expanding));
-    layout()->addWidget(&ownerLable);
-    layout()->addWidget(&permissionsLable);
+    nameWidget->setLayout(nameLayout);
+   
+    createInfoWidget();
+    createPermissionsWidget();
+   
+    layout()->addWidget(nameWidget);
+    layout()->addWidget(infoWidget);
+    layout()->addWidget(&permissionsLabel);
+    layout()->addWidget(permissionsWidget);
 }
 
-void PropertiesWindow::directoryProperties(){
-    nameLable.setText("Directory name -> " + object->fileName());
-    
-    qint64 fileSizeInBytes = object->size();
-    double fileSizeInMB = static_cast<double>(fileSizeInBytes) / (1024 * 1024);
-    double fileSizeInGB = fileSizeInMB / 1024;
-
-    QString sizeText;
-
-    if (fileSizeInGB >= 0.01) {
-        sizeText = "Directory size -> " + QString::number(fileSizeInGB, 'f', 2) + " GB";
-    } else if (fileSizeInMB >= 0.01) {
-        sizeText = "Directory size -> " + QString::number(fileSizeInMB, 'f', 2) + " MB";
-    } else {
-        sizeText = "Directory size -> " + QString::number(fileSizeInBytes) + " bytes";
+qint64 PropertiesWindow::dirSize(QString dirPath) {
+    qint64 size = 0;
+    QDir dir(dirPath);
+    //calculate total size of current directories' files
+    QDir::Filters fileFilters = QDir::Files|QDir::System|QDir::Hidden;
+    for(QString filePath : dir.entryList(fileFilters)) {
+        QFileInfo fi(dir, filePath);
+        size+= fi.size();
     }
-
-    sizeLable.setText(sizeText);
-    
-    pathLable.setText("Directory path -> " + object->absoluteFilePath());
-    birthDateLable.setText("Directory birth date -> " + object->birthTime().toString("yyyy-MM-dd HH:mm:ss"));
-    lastModifiedLable.setText("Directory last modified -> " + object->lastModified().toString("yyyy-MM-dd HH:mm:ss"));
-    ownerLable.setText("Directory owner -> " + object->owner());
-
-    
-    ownerLable.setText("Direcotry owner -> " + object->owner());
-    QFileDevice::Permissions filePermissions = object->permissions();
-    QString permissionsText = "Directory permissions -> ";
-
-    if (filePermissions & QFileDevice::ReadOwner)
-        permissionsText += "ReadOwner ";
-    if (filePermissions & QFileDevice::WriteOwner)
-        permissionsText += "WriteOwner ";
-    if (filePermissions & QFileDevice::ExeOwner)
-        permissionsText += "ExeOwner ";
-
-    if (filePermissions & QFileDevice::ReadUser)
-        permissionsText += "ReadUser ";
-    if (filePermissions & QFileDevice::WriteUser)
-        permissionsText += "WriteUser ";
-    if (filePermissions & QFileDevice::ExeUser)
-        permissionsText += "ExeUser ";
-
-    if (filePermissions & QFileDevice::ReadGroup)
-        permissionsText += "ReadGroup ";
-    if (filePermissions & QFileDevice::WriteGroup)
-        permissionsText += "WriteGroup ";
-    if (filePermissions & QFileDevice::ExeGroup)
-        permissionsText += "ExeGroup ";
-
-    if (filePermissions & QFileDevice::ReadOther)
-        permissionsText += "ReadOther ";
-    if (filePermissions & QFileDevice::WriteOther)
-        permissionsText += "WriteOther ";
-    if (filePermissions & QFileDevice::ExeOther)
-        permissionsText += "ExeOther ";
-
-    permissionsLable.setText(permissionsText);
-    
-    layout()->addWidget(&nameLable);
-    layout()->addWidget(&pathLable);
-    layout()->addItem(new QSpacerItem(0, 10, QSizePolicy::Minimum, QSizePolicy::Expanding));
-    layout()->addWidget(&sizeLable);
-    layout()->addWidget(&birthDateLable);
-    layout()->addWidget(&lastModifiedLable);
-    layout()->addItem(new QSpacerItem(0, 10, QSizePolicy::Minimum, QSizePolicy::Expanding));
-    layout()->addWidget(&ownerLable);
-    layout()->addWidget(&permissionsLable);
+    //add size of child directories recursively
+    QDir::Filters dirFilters = QDir::Dirs|QDir::NoDotAndDotDot|QDir::System|QDir::Hidden;
+    for(QString childDirPath : dir.entryList(dirFilters))
+        size+= dirSize(dirPath + QDir::separator() + childDirPath);
+    return size;
 }
+
+QString PropertiesWindow::formatSize(qint64 size) {
+    QStringList units = {"Bytes", "KB", "MB", "GB", "TB", "PB"};
+    int i;
+    double outputSize = size;
+    for(i=0; i<units.size()-1; i++) {
+        if(outputSize<1024) break;
+        outputSize= outputSize/1024;
+    }
+    return QString("%0 %1").arg(outputSize, 0, 'f', 2).arg(units[i]);
+}
+
+void PropertiesWindow::createInfoWidget(){
+     infoWidget = new QWidget(this);
+    infoLayout = new QVBoxLayout(infoWidget);
+
+    typeLabel.setTextFormat(Qt::RichText);
+    sizeLabel.setTextFormat(Qt::RichText);
+    pathLabel.setTextFormat(Qt::RichText);
+    birthDateLabel.setTextFormat(Qt::RichText);
+    lastModifiedLabel.setTextFormat(Qt::RichText);
+    ownerLabel.setTextFormat(Qt::RichText);
+
+    if(object->isDir()){
+        typeLabel.setText("<b>Type:</b> Directory");
+        sizeLabel.setText("<b>Size:</b> " + formatSize(dirSize(object->absoluteFilePath())));
+    }else{
+        typeLabel.setText("<b>Type:</b> File");
+        sizeLabel.setText("<b>Size:</b> " + formatSize(object->size()));
+    }
+    pathLabel.setText("<b>Path:</b> " + object->absoluteFilePath());
+    birthDateLabel.setText("<b>Created:</b> " + object->birthTime().toString("dd-MM-yyyy HH:mm:ss"));
+    lastModifiedLabel.setText("<b>Modified:</b> " + object->lastModified().toString("dd-MM-yyyy HH:mm:ss"));
+    ownerLabel.setText("<b>Owner:</b> " + object->owner());
+
+    infoLayout->addWidget(&pathLabel);
+    infoLayout->addWidget(&typeLabel);
+    infoLayout->addWidget(&sizeLabel);
+    infoLayout->addWidget(&ownerLabel);
+    infoLayout->addWidget(&birthDateLabel);
+    infoLayout->addWidget(&lastModifiedLabel);
+    infoLayout->addWidget(&permissionsLabel);
+    infoWidget->setLayout(infoLayout);
+}
+
+void PropertiesWindow::createPermissionsWidget(){
+     permissionsLabel.setTextFormat(Qt::RichText);
+    permissionsLabel.setText("<b>Permissions</b> ");
+    permissionsLabel.setAlignment(Qt::AlignCenter);
+
+    QFileDevice::Permissions filePermissions = object->permissions();
+    permissionsWidget = new QWidget(this);
+    permissionsLayout = new QHBoxLayout(permissionsWidget);
+
+    QString option = "Option\t\nRead\t\nWrite\t\nExecute\t";
+
+    QString ownerPermissions = "Owner:\t";
+    if (filePermissions & QFileDevice::ReadOwner)
+        ownerPermissions += "\n+";
+    else
+        ownerPermissions += "\n-";
+    if (filePermissions & QFileDevice::WriteOwner)
+        ownerPermissions += "\n+";
+    else
+        ownerPermissions += "\n-";
+    if (filePermissions & QFileDevice::ExeOwner)
+        ownerPermissions += "\n+";
+    else
+        ownerPermissions += "\n-";
+
+    QString groupPermissions = "Group:\t";
+    if (filePermissions & QFileDevice::ReadGroup)
+        groupPermissions += "\n+";
+    else
+        groupPermissions += "\n-";
+    if (filePermissions & QFileDevice::WriteGroup)
+        groupPermissions += "\n+";
+    else
+        groupPermissions += "\n-";
+    if (filePermissions & QFileDevice::ExeGroup)
+        groupPermissions += "\n+";
+    else
+        groupPermissions += "\n-";
+
+    QString otherPermissions = "Other:\t";
+    if (filePermissions & QFileDevice::ReadOther)
+        otherPermissions += "\n+";
+    else
+        otherPermissions += "\n-";
+    if (filePermissions & QFileDevice::WriteOther)
+        otherPermissions += "\n+";
+    else
+        otherPermissions += "\n-";
+    if (filePermissions & QFileDevice::ExeOther)
+        otherPermissions += "\n+";
+    else
+        otherPermissions += "\n-";
+
+    QString userPermissions = "User:\t";
+    if (filePermissions & QFileDevice::ReadUser)
+        userPermissions += "\n+";
+    else
+        userPermissions += "\n-";
+    if (filePermissions & QFileDevice::WriteUser)
+        userPermissions += "\n+";
+    else
+        userPermissions += "\n-";
+    if (filePermissions & QFileDevice::ExeUser)
+        userPermissions += "\n+";
+    else
+        userPermissions += "\n-";
+
+    permissionsLayout->addWidget(new QLabel(option, permissionsWidget));
+    permissionsLayout->addWidget(new QLabel(ownerPermissions, permissionsWidget));
+    permissionsLayout->addWidget(new QLabel(userPermissions, permissionsWidget));
+    permissionsLayout->addWidget(new QLabel(groupPermissions, permissionsWidget));
+    permissionsLayout->addWidget(new QLabel(otherPermissions, permissionsWidget));
+    permissionsWidget->setLayout(permissionsLayout);
+}
+

@@ -1,10 +1,12 @@
 #pragma once
 #include <QLabel>
+#include <QDir>
 #include <QFileInfo>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDateTime>
 #include <QPushButton>
+#include <QLineEdit>
 
 #include "../rosourcesPaths.hpp"
 #include "../macrologger.h"
@@ -17,21 +19,30 @@ class PropertiesWindow : public QWidget {
         virtual ~PropertiesWindow();
 
     private slots:
-        void fileProperties();
-        void directoryProperties();
+        void createProperties();
+        void createPermissionsWidget();
+        void createInfoWidget();
 
     private:
         QString objectPath;
         QFileInfo* object;
-        QLabel nameLable;
-        QLabel sizeLable;
-        QLabel typeLable;
-        QLabel pathLable;
-        QLabel birthDateLable;
-        QLabel lastModifiedLable;
-        QLabel ownerLable;
-        QLabel permissionsLable;
+        QLineEdit* nameEdit;
+        QWidget* permissionsWidget;
+        QLayout* permissionsLayout;
+        QWidget* infoWidget;
+        QLayout* infoLayout;
+        QLabel nameLabel;
+        QLabel sizeLabel;
+        QLabel typeLabel;
+        QLabel pathLabel;
+        QLabel birthDateLabel;
+        QLabel lastModifiedLabel;
+        QLabel ownerLabel;
+        QLabel permissionsLabel;
+
+        qint64 dirSize(QString path);
+        QString formatSize(qint64 size);
 
     signals:
-        
+  
 };

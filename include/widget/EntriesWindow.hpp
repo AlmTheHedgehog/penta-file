@@ -23,6 +23,7 @@ class EntriesWindow : public QScrollArea {
         void addNewEntry(LineEntry* newEntry);
         void clearEntiesList();
         void copyAndReplaceFolderContents(const QString &fromDir, const QString &toDir, bool copyAndRemove = false);        unsigned int entriesNumber;
+        void blockPropertiesChecksumButtons();
         std::vector<LineEntry*> lineEntries;
         std::vector<ChecksumDialogWindow*> checksumVerifyWindows;
         
@@ -43,6 +44,7 @@ class EntriesWindow : public QScrollArea {
         void renameSelectedLine(const QString &newName);
         void createNewChecksumVerificationWindow();
         void createPropertiesWindow();
+
 
     signals:
         void wrongPath();
