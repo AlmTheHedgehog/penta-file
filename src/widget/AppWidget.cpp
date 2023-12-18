@@ -15,7 +15,7 @@ AppWidget::AppWidget(QString path, QWidget *parent) :
     connect(&entriesWindow, &EntriesWindow::setNewPathSignal, 
             &topBar, &TopBarWidget::setPath);
     connect(&topBar, &TopBarWidget::newPathSignal, 
-            &entriesWindow, &EntriesWindow::setNewPath);   
+            &entriesWindow, &EntriesWindow::setNewPath);  
     connectSignals();
  
 
@@ -30,6 +30,7 @@ void AppWidget::changePathToMountedFolder(QString path){
 }
 
 void AppWidget::connectSignals(){
+
     connect(&topBar, &TopBarWidget::copySignal,
                 &entriesWindow, &EntriesWindow::copySelectedLine);
     connect(&topBar, &TopBarWidget::pasteSignal,
@@ -44,9 +45,12 @@ void AppWidget::connectSignals(){
                 &entriesWindow, &EntriesWindow::renameSelectedLine);
     connect(&topBar, &TopBarWidget::checksumVerificationSignal,
                 &entriesWindow, &EntriesWindow::createNewChecksumVerificationWindow);
-
+    connect(&topBar, &TopBarWidget::propertiesSignal,
+                &entriesWindow, &EntriesWindow::createPropertiesWindow);
     connect(&entriesWindow, &EntriesWindow::turnOnChecksumVerificationForSelectedLineSignal,
                 &topBar, &TopBarWidget::turnOnVerifyChecksumButton);
+    connect(&entriesWindow, &EntriesWindow::turnOnPropertiesForSelectedLineSignal,
+                &topBar, &TopBarWidget::turnOnPropertiesButton);
 
 }
 
