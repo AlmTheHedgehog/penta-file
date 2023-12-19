@@ -9,6 +9,7 @@ NotificationWindow::NotificationWindow(QString msg, NotificationType notificatio
     layout()->addWidget(&okButton);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     styleComponents();
+    setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
     connect(&okButton, &QPushButton::clicked, this, &NotificationWindow::closeWindow);
     LOG_INFO("Message window openned. Text: \"%s\"", msg.toLatin1().data());
 }
