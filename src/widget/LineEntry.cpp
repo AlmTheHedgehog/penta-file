@@ -11,14 +11,17 @@ LineEntry::LineEntry(LineType lineType, QString name, QString path, qint64 size,
     }else{
         sizeLabel = new QLabel(QString::number(size));
     }
+    checksumLabel = new QLabel();
 
     iconLabel->setFixedSize(16, 16);
     nameLabel->setFixedHeight(32);
-    sizeLabel->setFixedSize(50, 32);
+    sizeLabel->setFixedSize(70, 32);
     setFixedHeight(32);
 
     layout()->addWidget(iconLabel);
     layout()->addWidget(nameLabel);
+    layout()->addWidget(checksumLabel);
+    checksumLabel->hide();
     layout()->addWidget(sizeLabel);
     layout()->setContentsMargins(8, 0, 0, 0);
     setStyleSheet("padding: 0px");
@@ -108,5 +111,15 @@ QString LineEntry::getLineName(){
 }
 
 QString LineEntry::getChecksum(){
-    return checksum;
+    if(isChecksumCalculated){
+        return checksum;
+    }else{
+        calculateChecksum();
+        return checksum;
+    }
 };
+
+void LineEntry::showChecksum(){
+    checksumLabel->setText(getChecksum());
+    checksumLabel->show();
+}

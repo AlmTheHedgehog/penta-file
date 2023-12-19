@@ -44,6 +44,7 @@ class TopBarWidget : public QWidget {
         void deleteItem();
         void renameItem();
         void checksumVerification();
+        void searchByHash();
         void properties();
 
     signals:
@@ -55,12 +56,14 @@ class TopBarWidget : public QWidget {
         void addNewFolderSignal(const QString &destinationPath);
         void renameSignal(const QString &newName);
         void checksumVerificationSignal();
+        void searchByHashSignal(const QString &searchHash);
         void propertiesSignal();
     
     private:
         void createActions();
         void createMenus(QMenuBar *menuBar);
-        void createSearchField(QLineEdit *pathField, QPushButton *searchButton);
+        void createSearchField(QLineEdit *pathField, QPushButton *goToPathButton);
+        void createHashSearchField(QLineEdit *hashSearchField, QPushButton *hashSearchButton);
 
         QMenuBar *menuBar;
         QMenu *fileMenu;
@@ -85,7 +88,9 @@ class TopBarWidget : public QWidget {
 
         
         QLineEdit *pathField;
-        QPushButton *searchButton;
+        QPushButton *goToPathButton;
+        QLineEdit *hashSearchField;
+        QPushButton *hashSearchButton;
 
         bool *isCut = new bool(false);
 };

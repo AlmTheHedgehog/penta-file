@@ -31,6 +31,7 @@ class LineEntry : public QPushButton {
         LineType getLineType();
         QString getLineName();
         QString getChecksum();
+        void showChecksum();
 
     public slots:
         void setSelection(bool selected);
@@ -39,18 +40,17 @@ class LineEntry : public QPushButton {
     private:
         QLabel  *iconLabel, 
                 *nameLabel, 
-                *sizeLabel;
+                *sizeLabel,
+                *checksumLabel;
         LineType lineType;
         QString  name;
         qint64   size;
         QString  path;
         QString  checksum;
+        bool isChecksumCalculated = false;
         void mouseDoubleClickEvent(QMouseEvent*) override;
         void mousePressEvent(QMouseEvent* event) override;
-
-    public slots:
         void calculateChecksum();
-
 
     signals:
         void setNewPath(QString newPath);

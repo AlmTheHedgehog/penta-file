@@ -9,15 +9,8 @@ AppWidget::AppWidget(QString path, QWidget *parent) :
     layout()->addWidget(&entriesWindow);
 
     topBar.setPath(path);
-      
-    connect(&mountedFoldersWidget, &MainFolderWidget::folderButtonClicked, 
-            this, &AppWidget::changePathToMountedFolder);
-    connect(&entriesWindow, &EntriesWindow::setNewPathSignal, 
-            &topBar, &TopBarWidget::setPath);
-    connect(&topBar, &TopBarWidget::newPathSignal, 
-            &entriesWindow, &EntriesWindow::setNewPath);  
+
     connectSignals();
- 
 
 }
 
@@ -51,6 +44,15 @@ void AppWidget::connectSignals(){
                 &topBar, &TopBarWidget::turnOnVerifyChecksumButton);
     connect(&entriesWindow, &EntriesWindow::turnOnPropertiesForSelectedLineSignal,
                 &topBar, &TopBarWidget::turnOnPropertiesButton);
+
+    connect(&mountedFoldersWidget, &MainFolderWidget::folderButtonClicked,
+                this, &AppWidget::changePathToMountedFolder);
+    connect(&entriesWindow, &EntriesWindow::setNewPathSignal,
+                &topBar, &TopBarWidget::setPath);
+    connect(&topBar, &TopBarWidget::newPathSignal,
+                &entriesWindow, &EntriesWindow::setNewPath);
+    connect(&topBar, &TopBarWidget::searchByHashSignal,
+                &entriesWindow, &EntriesWindow::searchByHash);
 
 }
 

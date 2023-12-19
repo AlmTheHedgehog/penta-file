@@ -23,6 +23,7 @@ clear:
 	rm -rf build/rcc
 	rm -rf build/bin
 	rm -f  build/.qmake.stash
+	rm -f  build/Makefile
 
 full-build:
 	qmake -o build/Makefile build/$(PROJECT).pro

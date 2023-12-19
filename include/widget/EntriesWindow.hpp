@@ -6,7 +6,9 @@
 #include <QProcess>
 #include <QDirIterator>
 
+#include "PopupWindowB.hpp"
 #include "ChecksumDialogWindow.hpp"
+#include "NotificationWindow.hpp"
 #include "PropertiesWindow.hpp"
 #include "LineEntry.hpp"
 #include "../macrologger.h"
@@ -16,17 +18,18 @@ class EntriesWindow : public QScrollArea {
 
     public:
         EntriesWindow(QString path = "", QWidget *parent = nullptr);
-        void deleteChecksumVerifyWindow(ChecksumDialogWindow *windowPtr);
         virtual ~EntriesWindow();
 
     private:
         void addNewEntry(LineEntry* newEntry);
         void clearEntiesList();
-        void copyAndReplaceFolderContents(const QString &fromDir, const QString &toDir, bool copyAndRemove = false);        unsigned int entriesNumber;
-        void blockPropertiesChecksumButtons();
+        void copyAndReplaceFolderContents(const QString &fromDir, const QString &toDir, bool copyAndRemove = false);
+        unsigned int entriesNumber;
+        void initPopupWindow(PopupWindowB* window);
+        void addFileLinesToVector(QDir directory, const QString &hash);
+        void deselectLine();
         std::vector<LineEntry*> lineEntries;
-        std::vector<ChecksumDialogWindow*> checksumVerifyWindows;
-        
+        std::vector<PopupWindowB*> dialogWindows;
         QWidget *entriesContainer;
         QDir directory;
         LineEntry *selectedLine = nullptr;
@@ -42,7 +45,9 @@ class EntriesWindow : public QScrollArea {
         void deleteSelectedLine();
         void addNewFolder(const QString &destinationPath);
         void renameSelectedLine(const QString &newName);
+        void deletePopupWindow(PopupWindowB *windowPtr);
         void createNewChecksumVerificationWindow();
+        void searchByHash(const QString &hash);
         void createPropertiesWindow();
 
 

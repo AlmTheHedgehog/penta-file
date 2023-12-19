@@ -8,10 +8,11 @@
 #include <QPushButton>
 #include <QLineEdit>
 
+#include "PopupWindowB.hpp"
 #include "../rosourcesPaths.hpp"
 #include "../macrologger.h"
 
-class PropertiesWindow : public QWidget {
+class PropertiesWindow : public PopupWindowB {
     Q_OBJECT
 
     public:

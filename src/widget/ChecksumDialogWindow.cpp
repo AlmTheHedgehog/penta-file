@@ -1,11 +1,12 @@
 #include "widget/ChecksumDialogWindow.hpp"
 
 ChecksumDialogWindow::ChecksumDialogWindow(QString fileName, QString checksum, QWidget *parent):
-                                        QWidget(parent), fileName(fileName), checksum(checksum){
+                                        PopupWindowB(parent), fileName(fileName), checksum(checksum){
     nameLable.setText("SHA256 checksum for \"" + fileName + "\":");
     checksumLine.setText(checksum);
     checksumLine.setReadOnly(true);
-    checksumLine.setFixedWidth(20 + QFontMetrics(checksumLine.font()).horizontalAdvance(checksumLine.text()));
+    checksumLine.setFixedWidth(LINE_EDIT_PADDING_PX + QFontMetrics(checksumLine.font())
+                                                        .horizontalAdvance(checksumLine.text()));
     compareToLable.setText("Compare to checksum:");
     verifyButton.setText("Verify");
 
@@ -31,10 +32,10 @@ ChecksumDialogWindow::ChecksumDialogWindow(QString fileName, QString checksum, Q
 
     connect(&verifyButton, &QPushButton::clicked,
             this, &ChecksumDialogWindow::verifyChecksum);
+    LOG_INFO("Checksum Dialog Window for %s was created", fileName.toLatin1().data());
 }
 
 ChecksumDialogWindow::~ChecksumDialogWindow(){
-    emit destroyedSignal(this);
 }
 
 void ChecksumDialogWindow::verifyChecksum(bool){

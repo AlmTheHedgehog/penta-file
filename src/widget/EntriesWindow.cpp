@@ -36,19 +36,26 @@ void EntriesWindow::clearEntiesList(){
 
 void EntriesWindow::setNewPath(const QString &newPath){
     QFileInfo newDir(newPath);
-    if ((!newDir.exists()) || (!newDir.isDir())) {
+    if(!newDir.exists()){
+        LOG_ABNORMAL("A new directory(%s) doesn`t exist.",
+                        newPath.toLatin1().data());
+        NotificationWindow *errorWindow = new NotificationWindow("path " + newPath + " doesn`t exist", 
+                                                                NotificationWindow::NotificationType::ERROR);
+        initPopupWindow(errorWindow);
+        return;
+    }
+    if(!newDir.isWritable()){
         //TODO: make possible to work with read-only dirs
-        if(!newDir.isWritable()){
-            LOG_INFO("A new directory(%s) is opened in read-only, isWritable:%d",
-                    newPath.toLatin1().data(), false);
-        }
-
-        QProcess::startDetached("xdg-open", QStringList() << newDir.filePath());
-
+        LOG_INFO("A new directory(%s) is opened in read-only", newPath.toLatin1().data());
         // LOG_ABNORMAL("Failed to set a new directory(%s). Emit wrongPath signal."
         //             " Exists:%d, isDir:%d",
         //             newPath.toLatin1().data(), newDir.exists(), newDir.isDir());
         // emit wrongPath();
+    }
+    if(!newDir.isDir()){
+        QProcess::startDetached("xdg-open", QStringList() << newDir.filePath());
+        LOG_INFO("A new directory(%s) is a file which will be opened using xdg-open",
+                    newPath.toLatin1().data());
         return;
     }
     directory.setPath(newPath);
@@ -73,7 +80,7 @@ void EntriesWindow::setNewPath(const QString &newPath){
     }
     LOG_INFO("New path(%s) was set and entries were fetched", newPath.toLatin1().data());
     emit setNewPathSignal(newPath);
-    blockPropertiesChecksumButtons();
+    deselectLine();
 }
 
 
@@ -110,7 +117,7 @@ void EntriesWindow::copySelectedLine(){
     copiedLine = new QFileInfo(selectedLine->getFilePath());
     LOG_INFO("Line(%s) was copied", selectedLine->getFilePath().toLatin1().data());
     selectedLine->setSelection(false);
-    blockPropertiesChecksumButtons();
+    deselectLine();
 }
 
 void EntriesWindow::cutSelectedLine(){
@@ -123,7 +130,7 @@ void EntriesWindow::cutSelectedLine(){
     *isCut = true;
     LOG_INFO("Line(%s) was cut", selectedLine->getFilePath().toLatin1().data());
     selectedLine->setSelection(false);
-    blockPropertiesChecksumButtons();
+    deselectLine();
 }
 
 void EntriesWindow::pasteSelectedLine(const QString &destinationPath){
@@ -177,7 +184,7 @@ void EntriesWindow::pasteSelectedLine(const QString &destinationPath){
     }
     setNewPath(destinationPath);
     LOG_INFO("Line(%s) was pasted", copiedLine->fileName().toLatin1().data());
-    blockPropertiesChecksumButtons();
+    deselectLine();
 }
 
 
@@ -231,7 +238,7 @@ void EntriesWindow::deleteSelectedLine(){
         }
     }
     setNewPath(directory.absolutePath());
-    blockPropertiesChecksumButtons();
+    deselectLine();
 }
 
 void EntriesWindow::addNewFolder(const QString &folderName){
@@ -276,22 +283,22 @@ void EntriesWindow::renameSelectedLine(const QString &newName){
         }
     }
     setNewPath(directory.absolutePath());
-    blockPropertiesChecksumButtons();
+    deselectLine();
 }
 
-void EntriesWindow::deleteChecksumVerifyWindow(ChecksumDialogWindow *windowPtr){
+void EntriesWindow::deletePopupWindow(PopupWindowB *windowPtr){
     bool found = false;
-    std::vector<ChecksumDialogWindow*>::iterator iter = checksumVerifyWindows.begin();
-    for(; iter < checksumVerifyWindows.end(); iter++){
+    std::vector<PopupWindowB*>::iterator iter = dialogWindows.begin();
+    for(; iter < dialogWindows.end(); iter++){
         if(*iter == windowPtr){
             found = true;
             break;
         }
     }
     if(found){
-        checksumVerifyWindows.erase(iter);
+        dialogWindows.erase(iter);
     }else{
-        LOG_ABNORMAL("Didn`t find checksum window to delete from vector");
+        LOG_ABNORMAL("Didn`t find dialog window to delete from vector");
     }
 }
 
@@ -304,16 +311,47 @@ void EntriesWindow::createNewChecksumVerificationWindow(){
         LOG_ABNORMAL("Impossible to calculate checksum for directory");
         return;
     }
-    selectedLine->calculateChecksum();
     ChecksumDialogWindow* newVerificationWindow = new ChecksumDialogWindow(selectedLine->getLineName(),
                                                                         selectedLine->getChecksum());
-    checksumVerifyWindows.push_back(newVerificationWindow);
-    connect(newVerificationWindow, &ChecksumDialogWindow::destroyedSignal,
-            this, &EntriesWindow::deleteChecksumVerifyWindow);
-    newVerificationWindow->show();
-    LOG_INFO("Checksum Dialog Window for %s was created", selectedLine->getLineName().toLatin1().data());
+    initPopupWindow(newVerificationWindow);
     selectedLine->setSelection(false);
-    blockPropertiesChecksumButtons();
+    deselectLine();
+}
+
+void EntriesWindow::initPopupWindow(PopupWindowB* window){
+    dialogWindows.push_back(window);
+    connect(window, &PopupWindowB::windowDestroyed,
+            this, &EntriesWindow::deletePopupWindow);
+    window->show();
+}
+
+void EntriesWindow::searchByHash(const QString &searchHash){
+    //Find all entries which contain hash subline
+    clearEntiesList();
+    addFileLinesToVector(directory, searchHash.toLower());
+    LOG_INFO("Search by hash \"%s\" was finished, found %ld objects",
+            searchHash.toLatin1().data(), lineEntries.size());
+}
+
+void EntriesWindow::addFileLinesToVector(QDir directory, const QString &hash){
+    LineEntry* lineEntry;
+    for(auto entry:directory.entryInfoList(QDir::Filter::NoDotAndDotDot
+                                            | QDir::Filter::Dirs
+                                            | QDir::Filter::Files, 
+                                            QDir::SortFlag::NoSort)){
+        if(entry.isDir()){
+            addFileLinesToVector(QDir(entry.absoluteFilePath()), hash);
+        }else{
+            lineEntry = new LineEntry(LineEntry::LineType::FILE, entry.fileName(),
+                                      entry.absoluteFilePath(), entry.size());
+            if(lineEntry->getChecksum().contains(hash)){
+                addNewEntry(lineEntry);
+                lineEntry->showChecksum();
+            }else{
+                delete lineEntry;
+            }
+        }
+    }
 }
 
 void EntriesWindow::createPropertiesWindow(){
@@ -322,13 +360,13 @@ void EntriesWindow::createPropertiesWindow(){
         return;
     }
     PropertiesWindow* newVerificationWindow = new PropertiesWindow(selectedLine->getFilePath());
-    newVerificationWindow->show();
+    initPopupWindow(newVerificationWindow);
     LOG_INFO("Properties Dialog Window for %s was created", selectedLine->getLineName().toLatin1().data());
     selectedLine->setSelection(false);
-    blockPropertiesChecksumButtons();
+    deselectLine();
 }
 
-void EntriesWindow::blockPropertiesChecksumButtons(){
+void EntriesWindow::deselectLine(){
     emit turnOnChecksumVerificationForSelectedLineSignal(false);
     emit turnOnPropertiesForSelectedLineSignal(false);
     selectedLine = nullptr;

@@ -1,7 +1,7 @@
 #include "widget/PropertiesWindow.hpp"
 
 PropertiesWindow::PropertiesWindow(QString objectPath, QWidget *parent):
-                                    QWidget(parent), objectPath(objectPath){
+                                    PopupWindowB(parent), objectPath(objectPath){
     object = new QFileInfo(objectPath);                                    
    
     setWindowTitle("Properties " + nameLabel.text());
@@ -26,6 +26,7 @@ void PropertiesWindow::createProperties(){
     nameLabel.setText("<b>Name:</b> ");
     nameLayout->addWidget(&nameLabel);
     nameEdit->setText(object->baseName());
+    nameEdit->setDisabled(true);
     nameLayout->addWidget(nameEdit);
     if(!object->isDir()){
         nameLayout->addWidget(new QLabel("." + object->suffix(), nameWidget));
