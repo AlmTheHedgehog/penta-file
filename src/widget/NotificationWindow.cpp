@@ -9,11 +9,11 @@ NotificationWindow::NotificationWindow(QString msg, NotificationType notificatio
     layout()->addWidget(&okButton);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     styleComponents();
+    connect(&okButton, &QPushButton::clicked, this, &NotificationWindow::closeWindow);
     LOG_INFO("Message window openned. Text: \"%s\"", msg.toLatin1().data());
 }
 
 NotificationWindow::~NotificationWindow(){
-
 }
 
 void NotificationWindow::styleComponents(){
@@ -26,4 +26,9 @@ void NotificationWindow::styleComponents(){
             setWindowTitle("Info");
             break;
     }
+}
+
+void NotificationWindow::closeWindow(){
+    destroy();
+    deleteLater();
 }

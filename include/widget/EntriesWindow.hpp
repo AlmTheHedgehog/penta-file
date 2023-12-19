@@ -9,6 +9,7 @@
 #include "PopupWindowB.hpp"
 #include "ChecksumDialogWindow.hpp"
 #include "NotificationWindow.hpp"
+#include "PropertiesWindow.hpp"
 #include "LineEntry.hpp"
 #include "../macrologger.h"
 
@@ -22,9 +23,11 @@ class EntriesWindow : public QScrollArea {
     private:
         void addNewEntry(LineEntry* newEntry);
         void clearEntiesList();
-        void copyAndReplaceFolderContents(const QString &fromDir, const QString &toDir, bool copyAndRemove = false);        unsigned int entriesNumber;
+        void copyAndReplaceFolderContents(const QString &fromDir, const QString &toDir, bool copyAndRemove = false);
+        unsigned int entriesNumber;
         void initPopupWindow(PopupWindowB* window);
         void addFileLinesToVector(QDir directory, const QString &hash);
+        void deselectLine();
         std::vector<LineEntry*> lineEntries;
         std::vector<PopupWindowB*> dialogWindows;
         QWidget *entriesContainer;
@@ -45,11 +48,15 @@ class EntriesWindow : public QScrollArea {
         void deletePopupWindow(PopupWindowB *windowPtr);
         void createNewChecksumVerificationWindow();
         void searchByHash(const QString &hash);
+        void createPropertiesWindow();
+
+
     signals:
         void wrongPath();
         void setNewPathSignal(const QString &newPath);
         void setFileToPathSignal(const QString &filePath);
         void copiedLineSignal(const QString &filePath);
         void turnOnChecksumVerificationForSelectedLineSignal(bool status);
+        void turnOnPropertiesForSelectedLineSignal(bool status);
 
 };

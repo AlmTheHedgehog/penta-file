@@ -39,7 +39,7 @@ void EntriesWindow::setNewPath(const QString &newPath){
     if(!newDir.exists()){
         LOG_ABNORMAL("A new directory(%s) doesn`t exist.",
                         newPath.toLatin1().data());
-        NotificationWindow *errorWindow = new NotificationWindow("path " + newPath + " doesn`t exists", 
+        NotificationWindow *errorWindow = new NotificationWindow("path " + newPath + " doesn`t exist", 
                                                                 NotificationWindow::NotificationType::ERROR);
         initPopupWindow(errorWindow);
         return;
@@ -80,6 +80,7 @@ void EntriesWindow::setNewPath(const QString &newPath){
     }
     LOG_INFO("New path(%s) was set and entries were fetched", newPath.toLatin1().data());
     emit setNewPathSignal(newPath);
+    deselectLine();
 }
 
 
@@ -101,6 +102,7 @@ void EntriesWindow::selectLine(const QString &filePath){
             }else{
                 emit turnOnChecksumVerificationForSelectedLineSignal(true);
             }
+            emit turnOnPropertiesForSelectedLineSignal(true);
             LOG_INFO("Line(%s) was selected", filePath.toLatin1().data());
         }
     }
@@ -115,7 +117,7 @@ void EntriesWindow::copySelectedLine(){
     copiedLine = new QFileInfo(selectedLine->getFilePath());
     LOG_INFO("Line(%s) was copied", selectedLine->getFilePath().toLatin1().data());
     selectedLine->setSelection(false);
-    selectedLine = nullptr;
+    deselectLine();
 }
 
 void EntriesWindow::cutSelectedLine(){
@@ -128,7 +130,7 @@ void EntriesWindow::cutSelectedLine(){
     *isCut = true;
     LOG_INFO("Line(%s) was cut", selectedLine->getFilePath().toLatin1().data());
     selectedLine->setSelection(false);
-    selectedLine = nullptr;
+    deselectLine();
 }
 
 void EntriesWindow::pasteSelectedLine(const QString &destinationPath){
@@ -182,7 +184,7 @@ void EntriesWindow::pasteSelectedLine(const QString &destinationPath){
     }
     setNewPath(destinationPath);
     LOG_INFO("Line(%s) was pasted", copiedLine->fileName().toLatin1().data());
-    copiedLine = nullptr;   
+    deselectLine();
 }
 
 
@@ -236,6 +238,7 @@ void EntriesWindow::deleteSelectedLine(){
         }
     }
     setNewPath(directory.absolutePath());
+    deselectLine();
 }
 
 void EntriesWindow::addNewFolder(const QString &folderName){
@@ -280,6 +283,7 @@ void EntriesWindow::renameSelectedLine(const QString &newName){
         }
     }
     setNewPath(directory.absolutePath());
+    deselectLine();
 }
 
 void EntriesWindow::deletePopupWindow(PopupWindowB *windowPtr){
@@ -311,8 +315,7 @@ void EntriesWindow::createNewChecksumVerificationWindow(){
                                                                         selectedLine->getChecksum());
     initPopupWindow(newVerificationWindow);
     selectedLine->setSelection(false);
-    emit turnOnChecksumVerificationForSelectedLineSignal(false);
-    selectedLine = nullptr;
+    deselectLine();
 }
 
 void EntriesWindow::initPopupWindow(PopupWindowB* window){
@@ -349,4 +352,22 @@ void EntriesWindow::addFileLinesToVector(QDir directory, const QString &hash){
             }
         }
     }
+}
+
+void EntriesWindow::createPropertiesWindow(){
+    if(selectedLine == nullptr){
+        LOG_ABNORMAL("Line is not selected");
+        return;
+    }
+    PropertiesWindow* newVerificationWindow = new PropertiesWindow(selectedLine->getFilePath());
+    initPopupWindow(newVerificationWindow);
+    LOG_INFO("Properties Dialog Window for %s was created", selectedLine->getLineName().toLatin1().data());
+    selectedLine->setSelection(false);
+    deselectLine();
+}
+
+void EntriesWindow::deselectLine(){
+    emit turnOnChecksumVerificationForSelectedLineSignal(false);
+    emit turnOnPropertiesForSelectedLineSignal(false);
+    selectedLine = nullptr;
 }

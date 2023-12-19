@@ -36,5 +36,6 @@ SOURCES += ../src/main.cpp \
            ../src/widget/MainFoldersWidget.cpp\
            ../src/widget/ChecksumDialogWindow.cpp\
            ../src/widget/NotificationWindow.cpp\
+           ../src/widget/PropertiesWindow.cpp\
            ../src/widget/AppWidget.cpp
 RESOURCES += penta-file.qrc

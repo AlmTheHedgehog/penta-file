@@ -31,6 +31,7 @@ class TopBarWidget : public QWidget {
         void setPath(const QString &newPath);
         void searchPath();
         void turnOnVerifyChecksumButton(bool status);
+        void turnOnPropertiesButton(bool status);
        
     private slots:
         void cut();
@@ -44,6 +45,7 @@ class TopBarWidget : public QWidget {
         void renameItem();
         void checksumVerification();
         void searchByHash();
+        void properties();
 
     signals:
         void newPathSignal(const QString &newPath);
@@ -55,6 +57,7 @@ class TopBarWidget : public QWidget {
         void renameSignal(const QString &newName);
         void checksumVerificationSignal();
         void searchByHashSignal(const QString &searchHash);
+        void propertiesSignal();
     
     private:
         void createActions();
@@ -78,6 +81,7 @@ class TopBarWidget : public QWidget {
         QAction *deleteAct;
         QAction *renameAct;
         QAction *checksumVerificationAct;
+        QAction *propertiesAct;
 
         QLabel *undoIconLabel;
         QLabel*redoIconLabel;

@@ -8,7 +8,7 @@ class PopupWindowB : public QWidget {
     Q_OBJECT
 
     public:
-        PopupWindowB(QWidget *parent = nullptr): QWidget(parent){};
+        PopupWindowB(QWidget *parent = nullptr): QWidget(parent){setAttribute(Qt::WA_DeleteOnClose);};
         virtual ~PopupWindowB(){emit windowDestroyed(this);};
 
     signals:

@@ -22,4 +22,7 @@ class NotificationWindow : public PopupWindowB {
         QPushButton okButton;
 
         void styleComponents();
+    
+    public slots:
+        void closeWindow();
 };
