@@ -43,6 +43,7 @@ class TopBarWidget : public QWidget {
         void deleteItem();
         void renameItem();
         void checksumVerification();
+        void searchByHash();
 
     signals:
         void newPathSignal(const QString &newPath);
@@ -53,6 +54,7 @@ class TopBarWidget : public QWidget {
         void addNewFolderSignal(const QString &destinationPath);
         void renameSignal(const QString &newName);
         void checksumVerificationSignal();
+        void searchByHashSignal(const QString &searchHash);
     
     private:
         void createActions();

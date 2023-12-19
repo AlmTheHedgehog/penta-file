@@ -24,6 +24,7 @@ class EntriesWindow : public QScrollArea {
         void clearEntiesList();
         void copyAndReplaceFolderContents(const QString &fromDir, const QString &toDir, bool copyAndRemove = false);        unsigned int entriesNumber;
         void initPopupWindow(PopupWindowB* window);
+        void addFileLinesToVector(QDir directory, const QString &hash);
         std::vector<LineEntry*> lineEntries;
         std::vector<PopupWindowB*> dialogWindows;
         QWidget *entriesContainer;
@@ -43,7 +44,7 @@ class EntriesWindow : public QScrollArea {
         void renameSelectedLine(const QString &newName);
         void deletePopupWindow(PopupWindowB *windowPtr);
         void createNewChecksumVerificationWindow();
-
+        void searchByHash(const QString &hash);
     signals:
         void wrongPath();
         void setNewPathSignal(const QString &newPath);

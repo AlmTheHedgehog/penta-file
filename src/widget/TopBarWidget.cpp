@@ -48,12 +48,12 @@ void TopBarWidget::createSearchField(QLineEdit *pathField, QPushButton *goToPath
 
     pathField->setText(currentPath);
     goToPathButton->setText("Go");
-    connect(goToPathButton, &QPushButton::clicked, this, &TopBarWidget::searchPath);
-
     pathField->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     layout()->addWidget(pathField);
     goToPathButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     layout()->addWidget(goToPathButton);
+
+    connect(goToPathButton, &QPushButton::clicked, this, &TopBarWidget::searchPath);
 }
 
 void TopBarWidget::createHashSearchField(QLineEdit *hashSearchField, QPushButton *hashSearchButton){
@@ -62,25 +62,25 @@ void TopBarWidget::createHashSearchField(QLineEdit *hashSearchField, QPushButton
 
     hashSearchButton->setText("Search");
     hashSearchField->setPlaceholderText("Enter sha256 hash of file");
-
     hashSearchField->setFixedWidth(QFontMetrics(hashSearchField->font()).horizontalAdvance(
                                         hashSearchField->placeholderText()) + LINE_EDIT_PADDING_PX);
     layout()->addWidget(hashSearchField);
     hashSearchButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     layout()->addWidget(hashSearchButton);
+
+    connect(hashSearchButton, &QPushButton::clicked, this, &TopBarWidget::searchByHash);
 }
 
-void TopBarWidget::searchPath() {
-    // QString path = pathField->text();
-    // pathField->setText(dir.absolutePath());
+void TopBarWidget::searchPath(){
     emit newPathSignal(pathField->text());
-    
-    // Perform actions with the entered path, e.g., navigate to the directory, etc.
-    // Add your logic here based on what you want to do with the entered path.
-    
-    // For now, let's just print the path
-    LOG_DEBUG("Path");
-    //TODO: add go to the path(emit signal?)
+    LOG_DEBUG("Got to path %s", pathField->text().toLatin1().data());
+}
+
+void TopBarWidget::searchByHash(){
+    if(!hashSearchField->text().isEmpty()){
+        LOG_DEBUG("Search by hash %s", hashSearchField->text().toLatin1().data());
+        emit searchByHashSignal(hashSearchField->text());
+    }
 }
 
 void TopBarWidget::createActions(){

@@ -307,7 +307,6 @@ void EntriesWindow::createNewChecksumVerificationWindow(){
         LOG_ABNORMAL("Impossible to calculate checksum for directory");
         return;
     }
-    selectedLine->calculateChecksum();
     ChecksumDialogWindow* newVerificationWindow = new ChecksumDialogWindow(selectedLine->getLineName(),
                                                                         selectedLine->getChecksum());
     initPopupWindow(newVerificationWindow);
@@ -321,4 +320,33 @@ void EntriesWindow::initPopupWindow(PopupWindowB* window){
     connect(window, &PopupWindowB::windowDestroyed,
             this, &EntriesWindow::deletePopupWindow);
     window->show();
+}
+
+void EntriesWindow::searchByHash(const QString &searchHash){
+    //Find all entries which contain hash subline
+    clearEntiesList();
+    addFileLinesToVector(directory, searchHash.toLower());
+    LOG_INFO("Search by hash \"%s\" was finished, found %ld objects",
+            searchHash.toLatin1().data(), lineEntries.size());
+}
+
+void EntriesWindow::addFileLinesToVector(QDir directory, const QString &hash){
+    LineEntry* lineEntry;
+    for(auto entry:directory.entryInfoList(QDir::Filter::NoDotAndDotDot
+                                            | QDir::Filter::Dirs
+                                            | QDir::Filter::Files, 
+                                            QDir::SortFlag::NoSort)){
+        if(entry.isDir()){
+            addFileLinesToVector(QDir(entry.absoluteFilePath()), hash);
+        }else{
+            lineEntry = new LineEntry(LineEntry::LineType::FILE, entry.fileName(),
+                                      entry.absoluteFilePath(), entry.size());
+            if(lineEntry->getChecksum().contains(hash)){
+                addNewEntry(lineEntry);
+                lineEntry->showChecksum();
+            }else{
+                delete lineEntry;
+            }
+        }
+    }
 }
