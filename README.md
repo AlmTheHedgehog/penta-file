@@ -6,16 +6,7 @@
 * `make`
 * `qmake`
 * `qtdeclarative5-dev`
-
-## Setup Procedure
-
-To initialize (only necessary once):
-
-```bash
-mkdir -p build
-qmake -project -o build/penta-file.pro
-sed -i '/^INCLUDEPATH.*/a \\nQT += widgets' build/penta-file.pro
-```
+* `openSSL`
 
 ## Build Procedure
 
