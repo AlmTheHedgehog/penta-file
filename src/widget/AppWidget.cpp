@@ -34,12 +34,12 @@ void AppWidget::connectSignals(){
                 &entriesWindow, &EntriesWindow::deleteSelectedLine);
     connect(&topBar, &TopBarWidget::addNewFolderSignal,
                 &entriesWindow, &EntriesWindow::addNewFolder);
-    connect(&topBar, &TopBarWidget::renameSignal,
-                &entriesWindow, &EntriesWindow::renameSelectedLine);
     connect(&topBar, &TopBarWidget::checksumVerificationSignal,
                 &entriesWindow, &EntriesWindow::createNewChecksumVerificationWindow);
     connect(&topBar, &TopBarWidget::propertiesSignal,
                 &entriesWindow, &EntriesWindow::createPropertiesWindow);
+    connect(&topBar, &TopBarWidget::renameSignal,
+               &entriesWindow, &EntriesWindow::createRenameWindow);
     connect(&entriesWindow, &EntriesWindow::turnOnChecksumVerificationForSelectedLineSignal,
                 &topBar, &TopBarWidget::turnOnVerifyChecksumButton);
     connect(&entriesWindow, &EntriesWindow::turnOnPropertiesForSelectedLineSignal,

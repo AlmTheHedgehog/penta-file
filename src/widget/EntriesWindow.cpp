@@ -366,6 +366,23 @@ void EntriesWindow::createPropertiesWindow(){
     deselectLine();
 }
 
+void EntriesWindow::createRenameWindow(){
+    if(selectedLine == nullptr){
+        LOG_ABNORMAL("Line is not selected");
+        return;
+    }
+    RenameWindow* newRenameWindow = new RenameWindow(selectedLine->getFilePath());
+    initPopupWindow(newRenameWindow);
+    LOG_INFO("Rename Dialog Window for %s was created", selectedLine->getLineName().toLatin1().data());
+    connect(&(*newRenameWindow), &RenameWindow::renameDone, this, &EntriesWindow::updateEntry);
+    selectedLine->setSelection(false);
+    deselectLine();
+}
+
+void EntriesWindow::updateEntry(){
+    setNewPath(directory.absolutePath());
+}
+
 void EntriesWindow::deselectLine(){
     emit turnOnChecksumVerificationForSelectedLineSignal(false);
     emit turnOnPropertiesForSelectedLineSignal(false);

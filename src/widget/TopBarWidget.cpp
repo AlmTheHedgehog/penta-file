@@ -30,6 +30,7 @@ void TopBarWidget::createMenus(QMenuBar *menuBar){
     editMenu->addAction(pasteAct);
     editMenu->addAction(deleteAct);
     editMenu->addSeparator();
+    editMenu->addAction(renameAct);
     
     // helpMenu = menuBar->addMenu(tr("&Help"));
 
@@ -196,9 +197,7 @@ void TopBarWidget::setPath(const QString &newPath) {
 }
 
 void TopBarWidget::renameItem(){
-    QString newName = QInputDialog::getText(this, tr("Rename item"),
-                                         tr("New name:"));
-    emit renameSignal(newName);
+    emit renameSignal();
 }
 
 void TopBarWidget::checksumVerification(){

@@ -7,6 +7,7 @@
 #include <QDirIterator>
 
 #include "PopupWindowB.hpp"
+#include "RenameWindow.hpp"
 #include "ChecksumDialogWindow.hpp"
 #include "NotificationWindow.hpp"
 #include "PropertiesWindow.hpp"
@@ -49,7 +50,8 @@ class EntriesWindow : public QScrollArea {
         void createNewChecksumVerificationWindow();
         void searchByHash(const QString &hash);
         void createPropertiesWindow();
-
+        void createRenameWindow();
+        void updateEntry();
 
     signals:
         void wrongPath();
