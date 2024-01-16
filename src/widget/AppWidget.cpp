@@ -44,7 +44,8 @@ void AppWidget::connectSignals(){
                 &topBar, &TopBarWidget::turnOnVerifyChecksumButton);
     connect(&entriesWindow, &EntriesWindow::turnOnPropertiesForSelectedLineSignal,
                 &topBar, &TopBarWidget::turnOnPropertiesButton);
-
+    connect(&entriesWindow, &EntriesWindow::turnOnEditButtonSignal,
+                &topBar, &TopBarWidget::turnOnEditButtons);
     connect(&mountedFoldersWidget, &MainFolderWidget::folderButtonClicked,
                 this, &AppWidget::changePathToMountedFolder);
     connect(&entriesWindow, &EntriesWindow::setNewPathSignal,

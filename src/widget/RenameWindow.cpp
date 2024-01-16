@@ -7,12 +7,16 @@ RenameWindow::RenameWindow(QString path, QWidget *parent):
     nameEdit = new QLineEdit(this);
     okButton.setText("OK");
     cancelButton.setText("Cancel");
+    QWidget *buttons = new QWidget(this);
+    QHBoxLayout *buttonsLayout = new QHBoxLayout(buttons);
+    buttonsLayout->addWidget(&okButton);
+    buttonsLayout->addWidget(&cancelButton);
     layout()->addWidget(nameEdit);
-    layout()->addWidget(&okButton);
-    layout()->addWidget(&cancelButton);
+    layout()->addWidget(buttons);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     adjustSize();
     connect(&okButton, &QPushButton::clicked, this, &RenameWindow::rename);
+    connect(nameEdit, &QLineEdit::returnPressed, this, &RenameWindow::rename);
     connect(&cancelButton, &QPushButton::clicked, this, &RenameWindow::closeWindow);
     LOG_INFO("Rename window openned. Path: \"%s\"", path.toLatin1().data());
 }
@@ -27,15 +31,17 @@ void RenameWindow::rename(){
         LOG_ERROR("New name is empty");
         NotificationWindow* notificationWindow = new NotificationWindow("New name is empty", NotificationWindow::NotificationType::ERROR);
         notificationWindow->show();
-        closeWindow();
+        return;
     }
 
     if(newName == oldfile.baseName()){
         LOG_ERROR("New name is the same as old name");
         NotificationWindow* notificationWindow = new NotificationWindow("New name is the same as old name", NotificationWindow::NotificationType::ERROR);
         notificationWindow->show();
+        return;
     }
     else{
+
         if(oldfile.isDir()){
             QString newPath = oldfile.absolutePath() + QDir::separator() + newName;
             QDir dir(path);
@@ -57,7 +63,7 @@ void RenameWindow::rename(){
                 notificationWindow->show();
             }
         }
-        closeWindow();
+        return;
     }
 }
 

@@ -32,6 +32,7 @@ class TopBarWidget : public QWidget {
         void searchPath();
         void turnOnVerifyChecksumButton(bool status);
         void turnOnPropertiesButton(bool status);
+        void turnOnEditButtons(bool status);
        
     private slots:
         void cut();

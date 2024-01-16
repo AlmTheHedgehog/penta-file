@@ -11,7 +11,6 @@ EntriesWindow::EntriesWindow(QString path, QWidget *parent):
     layout->setAlignment(Qt::AlignTop);
     setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     setWidgetResizable(true);
-
     setNewPath(path);
 }
 
@@ -103,6 +102,7 @@ void EntriesWindow::selectLine(const QString &filePath){
                 emit turnOnChecksumVerificationForSelectedLineSignal(true);
             }
             emit turnOnPropertiesForSelectedLineSignal(true);
+            emit turnOnEditButtonSignal(true);
             LOG_INFO("Line(%s) was selected", filePath.toLatin1().data());
         }
     }
@@ -386,5 +386,19 @@ void EntriesWindow::updateEntry(){
 void EntriesWindow::deselectLine(){
     emit turnOnChecksumVerificationForSelectedLineSignal(false);
     emit turnOnPropertiesForSelectedLineSignal(false);
+    emit turnOnEditButtonSignal(false);
     selectedLine = nullptr;
+}
+
+void EntriesWindow::mousePressEvent(QMouseEvent *event) {
+    if (event->button() == Qt::LeftButton) {
+        LOG_INFO("Left mouse button was pressed");
+        if(selectedLine != nullptr){
+            selectedLine->setSelection(false);
+            deselectLine();
+        }
+    }
+
+    // Call the base class implementation for other mouse press events
+    QScrollArea::mousePressEvent(event);
 }

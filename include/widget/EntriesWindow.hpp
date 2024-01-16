@@ -60,5 +60,8 @@ class EntriesWindow : public QScrollArea {
         void copiedLineSignal(const QString &filePath);
         void turnOnChecksumVerificationForSelectedLineSignal(bool status);
         void turnOnPropertiesForSelectedLineSignal(bool status);
-
+        void turnOnEditButtonSignal(bool status);
+    
+    protected:
+         void mousePressEvent(QMouseEvent *event) override;
 };
