@@ -12,6 +12,7 @@
 #include "NotificationWindow.hpp"
 #include "PropertiesWindow.hpp"
 #include "LineEntry.hpp"
+#include "AgreeDialog.hpp"
 #include "../macrologger.h"
 
 class EntriesWindow : public QScrollArea {
