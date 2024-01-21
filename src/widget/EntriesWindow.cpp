@@ -39,7 +39,7 @@ void EntriesWindow::setNewPath(const QString &newPath){
         LOG_ABNORMAL("A new directory(%s) doesn`t exist.",
                         newPath.toLatin1().data());
         NotificationWindow *errorWindow = new NotificationWindow("path " + newPath + " doesn`t exist", 
-                                                                NotificationWindow::NotificationType::ERROR);
+                                                                NotificationWindow::ERROR);
         initPopupWindow(errorWindow);
         return;
     }
@@ -219,6 +219,16 @@ void EntriesWindow::deleteSelectedLine(){
     //TODO: check if not read-only
     if(selectedLine == nullptr){
         LOG_ABNORMAL("No line was selected");
+        return;
+    }
+
+    AgreeDialog deleteDialog("Are you sure that you want to delete?",
+                            (QWidget*)parent());
+    bool isDeleteApproved = deleteDialog.exec();
+
+    if(!isDeleteApproved){
+        LOG_INFO("Removal was terminated for - %s",
+                selectedLine->getFilePath().toLatin1().data());
         return;
     }
 
