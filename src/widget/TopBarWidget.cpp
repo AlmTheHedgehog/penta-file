@@ -30,6 +30,7 @@ void TopBarWidget::createMenus(QMenuBar *menuBar){
     editMenu->addAction(pasteAct);
     editMenu->addAction(deleteAct);
     editMenu->addSeparator();
+    editMenu->addAction(renameAct);
     
     // helpMenu = menuBar->addMenu(tr("&Help"));
 
@@ -88,12 +89,14 @@ void TopBarWidget::createActions(){
 
     cutAct = new QAction(tr("&Cut"), this);
     cutAct->setShortcuts(QKeySequence::Cut);
+    cutAct->setDisabled(true);
     cutAct->setStatusTip(tr("Cut the current selection's contents to the "
                             "clipboard"));
     connect(cutAct, &QAction::triggered, this, &TopBarWidget::cut);
 
     copyAct = new QAction(tr("&Copy"), this);
     copyAct->setShortcuts(QKeySequence::Copy);
+    copyAct->setDisabled(true);
     copyAct->setStatusTip(tr("Copy the current selection's contents to the "
                              "clipboard"));
     connect(copyAct, &QAction::triggered, this, &TopBarWidget::copy);
@@ -102,6 +105,7 @@ void TopBarWidget::createActions(){
     pasteAct->setShortcuts(QKeySequence::Paste);
     pasteAct->setStatusTip(tr("Paste the clipboard's contents into the current "
                               "selection"));
+    pasteAct->setDisabled(true);
     connect(pasteAct, &QAction::triggered, this, &TopBarWidget::paste);
 
     undoAct = new QAction(this);
@@ -138,10 +142,12 @@ void TopBarWidget::createActions(){
     deleteAct = new QAction(tr("&Delete"), this);
     deleteAct->setStatusTip(tr("Delete item"));
     deleteAct->setShortcut(QKeySequence::Delete);
+    deleteAct->setDisabled(true);
     connect(deleteAct, &QAction::triggered, this, &TopBarWidget::deleteItem);
 
     renameAct = new QAction(tr("&Rename"), this);
     renameAct->setStatusTip(tr("Rename item"));
+    renameAct->setDisabled(true);
     connect(renameAct, &QAction::triggered, this, &TopBarWidget::renameItem);
 }
 
@@ -196,9 +202,7 @@ void TopBarWidget::setPath(const QString &newPath) {
 }
 
 void TopBarWidget::renameItem(){
-    QString newName = QInputDialog::getText(this, tr("Rename item"),
-                                         tr("New name:"));
-    emit renameSignal(newName);
+    emit renameSignal();
 }
 
 void TopBarWidget::checksumVerification(){
@@ -229,6 +233,42 @@ void TopBarWidget::turnOnPropertiesButton(bool status){
     }else{
         if(propertiesAct->isEnabled()){
             propertiesAct->setEnabled(false);
+        }
+    }
+}
+
+void TopBarWidget::turnOnEditButtons(bool status){
+    if(status){
+        if(!cutAct->isEnabled()){
+            cutAct->setEnabled(true);
+        }
+        if(!copyAct->isEnabled()){
+            copyAct->setEnabled(true);
+        }
+        if(!pasteAct->isEnabled()){
+            pasteAct->setEnabled(true);
+        }
+        if(!deleteAct->isEnabled()){
+            deleteAct->setEnabled(true);
+        }
+        if(!renameAct->isEnabled()){
+            renameAct->setEnabled(true);
+        }
+    }else{
+        if(cutAct->isEnabled()){
+            cutAct->setEnabled(false);
+        }
+        if(copyAct->isEnabled()){
+            copyAct->setEnabled(false);
+        }
+        if(pasteAct->isEnabled()){
+            pasteAct->setEnabled(false);
+        }
+        if(deleteAct->isEnabled()){
+            deleteAct->setEnabled(false);
+        }
+        if(renameAct->isEnabled()){
+            renameAct->setEnabled(false);
         }
     }
 }
