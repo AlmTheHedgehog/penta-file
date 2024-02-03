@@ -31,3 +31,7 @@ make clear
 ## Developing Procedure
 
 Don't forget to add your source files to the SOURCES var in build/penta-file.pro
+
+## Created by
+
+Tymofii Bereznytskyi and Tomasz Kubik
